@@ -2,50 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 
-typedef enum {
-    UNKNOWN,
-
-    // Reserved words
-    PROGRAM, BEGIN, END, IF, THEN,
-    ELSE, INPUT, OUTPUT, INT, FLOAT,
-    DOUBLE, WHILE, LOOP, CALL,
-
-    // Identifiers and literals
-    ID, NUM,
-
-    // Operators
-    ASSIGN, LESS_THAN, GREATER_THAN,
-    EQUALS, NOT_EQUALS, PLUS,
-    MINUS, MULTIPLY, DIVIDE,
-
-    // Punctuation
-    LEFT_PAREN, RIGHT_PAREN,
-    SEMICOLON, COMMA, COLON,
-} TokenType;
-
-typedef enum {
-    CLASS_UNKNOWN,
-    CLASS_LETTER,
-    CLASS_DIGIT,
-    CLASS_EOF,
-} CharClass;
-
-typedef struct {
-    FILE *fp;
-    char currentChar;
-    CharClass charClass;
-    char lexeme[100];
-    int lexemeLength;
-    TokenType currentToken;
-} Scanner;
-
-// function declarations
-Scanner createScanner(const char* filename);
-void nextChar(Scanner* scanner);
-void addChar(Scanner* scanner);
-void skipWhitespace(Scanner* scanner);
-void lookup(Scanner* scanner);
-void nextToken(Scanner* scanner);
+#include "../include/scanner.h"
 
 // function to create a scanner and open the source file
 Scanner createScanner(const char* filename) {
