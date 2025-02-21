@@ -1,7 +1,10 @@
 #include <ctype.h>
+#include <string.h>
 #include <stdio.h>
 
 typedef enum {
+    UNKNOWN,
+
     // Reserved words
     PROGRAM, BEGIN, END, IF, THEN,
     ELSE, INPUT, OUTPUT, INT, FLOAT,
@@ -21,9 +24,9 @@ typedef enum {
 } TokenType;
 
 typedef enum {
+    CLASS_UNKNOWN,
     CLASS_LETTER,
     CLASS_DIGIT,
-    CLASS_UNKNOWN,
     CLASS_EOF,
 } CharClass;
 
@@ -36,10 +39,21 @@ typedef struct {
     TokenType currentToken;
 } Scanner;
 
+// function declarations
+Scanner createScanner(const char* filename);
+void nextChar(Scanner* scanner);
+void addChar(Scanner* scanner);
+void skipWhitespace(Scanner* scanner);
+void lookup(Scanner* scanner);
+void nextToken(Scanner* scanner);
+
 // function to create a scanner and open the source file
 Scanner createScanner(const char* filename) {
-    Scanner scanner;
+    Scanner scanner = {0};
     scanner.fp = fopen(filename, "r");
+    scanner.charClass = CLASS_UNKNOWN;
+    scanner.currentToken = UNKNOWN;
+    nextChar(&scanner);
     return scanner;
 }
 
@@ -75,6 +89,7 @@ void skipWhitespace(Scanner* scanner) {
     }
 }
 
+// function to lookup operators and parentheses
 void lookup(Scanner* scanner) {
     switch(scanner->currentChar) {
         case '(':
@@ -154,11 +169,17 @@ void lookup(Scanner* scanner) {
             nextChar(scanner);
             scanner->currentToken = GREATER_THAN;
             break;
+
+        default:
+            addChar(scanner);
+            nextChar(scanner);
+            scanner->currentToken = UNKNOWN;
+            break;
     }
 }
 
 // function to collect the next token
-TokenType nextToken(Scanner* scanner) {
+void nextToken(Scanner* scanner) {
     // reset lexeme length for next token
     scanner->lexemeLength = 0;
     skipWhitespace(scanner);
@@ -173,8 +194,40 @@ TokenType nextToken(Scanner* scanner) {
                 addChar(scanner);
                 nextChar(scanner);
             }
-            token = ID;
+            // check if the lexeme is a reserved word
+            if (strcmp(scanner->lexeme, "program") == 0) {
+                token = PROGRAM;
+            } else if (strcmp(scanner->lexeme, "begin") == 0) {
+                token = BEGIN;
+            } else if (strcmp(scanner->lexeme, "end") == 0) {
+                token = END;
+            } else if (strcmp(scanner->lexeme, "if") == 0) {
+                token = IF;
+            } else if (strcmp(scanner->lexeme, "then") == 0) {
+                token = THEN;
+            } else if (strcmp(scanner->lexeme, "else") == 0) {
+                token = ELSE;
+            } else if (strcmp(scanner->lexeme, "input") == 0) {
+                token = INPUT;
+            } else if (strcmp(scanner->lexeme, "output") == 0) {
+                token = OUTPUT;
+            } else if (strcmp(scanner->lexeme, "int") == 0) {
+                token = INT;
+            } else if (strcmp(scanner->lexeme, "float") == 0) {
+                token = FLOAT;
+            } else if (strcmp(scanner->lexeme, "double") == 0) {
+                token = DOUBLE;
+            } else if (strcmp(scanner->lexeme, "while") == 0) {
+                token = WHILE;
+            } else if (strcmp(scanner->lexeme, "loop") == 0) {
+                token = LOOP;
+            } else if (strcmp(scanner->lexeme, "call") == 0) {
+                token = CALL;
+            } else {
+                token = ID;
+            }
             break;
+
         case CLASS_DIGIT:
             addChar(scanner);
             nextChar(scanner);
@@ -187,11 +240,11 @@ TokenType nextToken(Scanner* scanner) {
         case CLASS_UNKNOWN:
             addChar(scanner);
             nextChar(scanner);
-            // add lookup function for parens and operators
+            lookup(scanner);
             break;
         case CLASS_EOF:
             scanner->currentToken = EOF;
             break;
     }
-    return token;
+    scanner->currentToken = token;
 }
