@@ -1,6 +1,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../include/scanner.h"
 
@@ -8,6 +9,10 @@
 Scanner createScanner(const char* filename) {
     Scanner scanner = {0};
     scanner.fp = fopen(filename, "r");
+    if (scanner.fp == NULL) {
+            fprintf(stderr, "Error opening file: %s\n", filename);
+            exit(1);
+        }
     scanner.charClass = CLASS_UNKNOWN;
     scanner.currentToken = UNKNOWN;
     nextChar(&scanner);
@@ -140,7 +145,7 @@ void nextToken(Scanner* scanner) {
     // reset lexeme length for next token
     scanner->lexemeLength = 0;
     skipWhitespace(scanner);
-    TokenType token;
+    TokenType token = UNKNOWN;
 
     // determine the token based on the character class
     switch(scanner->charClass) {
@@ -200,7 +205,7 @@ void nextToken(Scanner* scanner) {
             lookup(scanner);
             break;
         case CLASS_EOF:
-            scanner->currentToken = EOF;
+            token = EOF;
             break;
     }
     scanner->currentToken = token;
