@@ -13,13 +13,12 @@ Scanner createScanner(const char* filename) {
             fprintf(stderr, "Error opening file: %s\n", filename);
             exit(1);
         }
-    scanner.charClass = CLASS_UNKNOWN;
     scanner.currentToken = UNKNOWN;
     nextChar(&scanner);
     return scanner;
 }
 
-// function to get the next character
+// function to get the next character and determine its class
 void nextChar(Scanner* scanner) {
     // get the next character from the file
     scanner->currentChar = getc(scanner->fp);
@@ -56,26 +55,18 @@ TokenType lookup(Scanner* scanner) {
     TokenType token = UNKNOWN;
     switch(scanner->currentChar) {
         case '(':
-            addChar(scanner);
-            nextChar(scanner);
             token = LEFT_PAREN;
             break;
 
         case ')':
-            addChar(scanner);
-            nextChar(scanner);
             token = RIGHT_PAREN;
             break;
 
         case ';':
-            addChar(scanner);
-            nextChar(scanner);
             token = SEMICOLON;
             break;
 
         case ',':
-            addChar(scanner);
-            nextChar(scanner);
             token = COMMA;
             break;
 
@@ -83,35 +74,29 @@ TokenType lookup(Scanner* scanner) {
             addChar(scanner);
             nextChar(scanner);
             if (scanner->currentChar == '=') {
-                addChar(scanner);
-                nextChar(scanner);
                 token = ASSIGN;
             } else {
                 token = COLON;
             }
             break;
 
+        case '=':
+            token = EQUALS;
+            break;
+
         case '+':
-            addChar(scanner);
-            nextChar(scanner);
             token = PLUS;
             break;
 
         case '-':
-            addChar(scanner);
-            nextChar(scanner);
             token = MINUS;
             break;
 
         case '*':
-            addChar(scanner);
-            nextChar(scanner);
             token = MULTIPLY;
             break;
 
         case '/':
-            addChar(scanner);
-            nextChar(scanner);
             token = DIVIDE;
             break;
 
@@ -119,8 +104,6 @@ TokenType lookup(Scanner* scanner) {
             addChar(scanner);
             nextChar(scanner);
             if (scanner->currentChar == '>') {
-                addChar(scanner);
-                nextChar(scanner);
                 token = NOT_EQUALS;
             } else {
                 token = LESS_THAN;
@@ -128,8 +111,6 @@ TokenType lookup(Scanner* scanner) {
             break;
 
         case '>':
-            addChar(scanner);
-            nextChar(scanner);
             token = GREATER_THAN;
             break;
 
@@ -152,8 +133,6 @@ void nextToken(Scanner* scanner) {
     // determine the token based on the character class
     switch(scanner->charClass) {
         case CLASS_LETTER:
-            addChar(scanner);
-            nextChar(scanner);
             while (scanner->charClass == CLASS_LETTER || scanner->charClass == CLASS_DIGIT) {
                 addChar(scanner);
                 nextChar(scanner);
@@ -193,8 +172,6 @@ void nextToken(Scanner* scanner) {
             break;
 
         case CLASS_DIGIT:
-            addChar(scanner);
-            nextChar(scanner);
             while (scanner->charClass == CLASS_DIGIT) {
                 addChar(scanner);
                 nextChar(scanner);
@@ -202,12 +179,16 @@ void nextToken(Scanner* scanner) {
             token = NUM;
             break;
         case CLASS_UNKNOWN:
+            token = lookup(scanner);
             addChar(scanner);
             nextChar(scanner);
-            token = lookup(scanner);
             break;
         case CLASS_EOF:
             token = EOF;
+            scanner->lexeme[0] = 'E';
+            scanner->lexeme[1] = 'O';
+            scanner->lexeme[2] = 'F';
+            scanner->lexeme[3] = '\0';
             break;
     }
     scanner->currentToken = token;
