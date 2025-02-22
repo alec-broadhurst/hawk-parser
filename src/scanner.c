@@ -52,30 +52,31 @@ void skipWhitespace(Scanner* scanner) {
 }
 
 // function to lookup operators and parentheses
-void lookup(Scanner* scanner) {
+TokenType lookup(Scanner* scanner) {
+    TokenType token = UNKNOWN;
     switch(scanner->currentChar) {
         case '(':
             addChar(scanner);
             nextChar(scanner);
-            scanner->currentToken = LEFT_PAREN;
+            token = LEFT_PAREN;
             break;
 
         case ')':
             addChar(scanner);
             nextChar(scanner);
-            scanner->currentToken = RIGHT_PAREN;
+            token = RIGHT_PAREN;
             break;
 
         case ';':
             addChar(scanner);
             nextChar(scanner);
-            scanner->currentToken = SEMICOLON;
+            token = SEMICOLON;
             break;
 
         case ',':
             addChar(scanner);
             nextChar(scanner);
-            scanner->currentToken = COMMA;
+            token = COMMA;
             break;
 
         case ':':
@@ -84,34 +85,34 @@ void lookup(Scanner* scanner) {
             if (scanner->currentChar == '=') {
                 addChar(scanner);
                 nextChar(scanner);
-                scanner->currentToken = ASSIGN;
+                token = ASSIGN;
             } else {
-                scanner->currentToken = COLON;
+                token = COLON;
             }
             break;
 
         case '+':
             addChar(scanner);
             nextChar(scanner);
-            scanner->currentToken = PLUS;
+            token = PLUS;
             break;
 
         case '-':
             addChar(scanner);
             nextChar(scanner);
-            scanner->currentToken = MINUS;
+            token = MINUS;
             break;
 
         case '*':
             addChar(scanner);
             nextChar(scanner);
-            scanner->currentToken = MULTIPLY;
+            token = MULTIPLY;
             break;
 
         case '/':
             addChar(scanner);
             nextChar(scanner);
-            scanner->currentToken = DIVIDE;
+            token = DIVIDE;
             break;
 
         case '<':
@@ -120,24 +121,25 @@ void lookup(Scanner* scanner) {
             if (scanner->currentChar == '>') {
                 addChar(scanner);
                 nextChar(scanner);
-                scanner->currentToken = NOT_EQUALS;
+                token = NOT_EQUALS;
             } else {
-                scanner->currentToken = LESS_THAN;
+                token = LESS_THAN;
             }
             break;
 
         case '>':
             addChar(scanner);
             nextChar(scanner);
-            scanner->currentToken = GREATER_THAN;
+            token = GREATER_THAN;
             break;
 
         default:
             addChar(scanner);
             nextChar(scanner);
-            scanner->currentToken = UNKNOWN;
+            token = UNKNOWN;
             break;
     }
+    return token;
 }
 
 // function to collect the next token
@@ -202,7 +204,7 @@ void nextToken(Scanner* scanner) {
         case CLASS_UNKNOWN:
             addChar(scanner);
             nextChar(scanner);
-            lookup(scanner);
+            token = lookup(scanner);
             break;
         case CLASS_EOF:
             token = EOF;

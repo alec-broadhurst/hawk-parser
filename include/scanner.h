@@ -47,7 +47,7 @@ Scanner createScanner(const char* filename);
 void nextChar(Scanner* scanner);
 void addChar(Scanner* scanner);
 void skipWhitespace(Scanner* scanner);
-void lookup(Scanner* scanner);
+TokenType lookup(Scanner* scanner);
 void nextToken(Scanner* scanner);
 
 #endif
