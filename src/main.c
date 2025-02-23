@@ -1,11 +1,9 @@
-#include <stdio.h>
 #include "../include/scanner.h"
+#include "../include/parser.h"
+#include <stdio.h>
 
 int main() {
-    Scanner scanner = createScanner("tests/input1.txt");
-    while (scanner.currentToken != EOF) {
-        nextToken(&scanner);
-        printf("Token: %d, Lexeme: %s\n", scanner.currentToken, scanner.lexeme);
-    }
+    Scanner scanner = createScanner("tests/test.txt");
+    parseProgram(&scanner);
     return 0;
 }
