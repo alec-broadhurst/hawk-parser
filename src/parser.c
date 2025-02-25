@@ -55,7 +55,7 @@ void parseDecl(Scanner* scanner) {
     }
     nextToken(scanner);
     parseType(scanner);
-    nextToken(scanner);
+    // nextToken(scanner);
     if (scanner->currentToken != SEMICOLON) {
         printf("Error: Missing ';'\n");
         exit(1);
@@ -63,6 +63,7 @@ void parseDecl(Scanner* scanner) {
     nextToken(scanner);
     printf("Exit DECL\n");
 }
+
 void parseIdList(Scanner* scanner) {
     printf("Enter ID_LIST\n");
     parseId(scanner);
@@ -78,13 +79,13 @@ void parseId(Scanner* scanner) {
         printf("Error: Expected identifier\n");
         exit(1);
     }
-    nextToken(scanner);
+    nextToken(scanner); // consume ID, get next token
 }
 
 void parseStmtSec(Scanner* scanner) {
     printf("Enter STMT_SEC\n");
     parseStmt(scanner);
-    if (scanner->currentToken == SEMICOLON) {
+    if (scanner->currentToken != END) {
         nextToken(scanner);
         parseStmtSec(scanner);
     }
@@ -93,7 +94,8 @@ void parseStmtSec(Scanner* scanner) {
 
 void parseStmt(Scanner* scanner) {
     printf("Enter STMT\n");
-    if (scanner->currentToken == ASSIGN) {
+    nextToken(scanner);
+    if (scanner->currentToken == ID) {
         parseAssign(scanner);
     } else if (scanner->currentToken == IF) {
         parseIfStmt(scanner);
@@ -109,15 +111,170 @@ void parseStmt(Scanner* scanner) {
     }
     printf("Exit STMT\n");
 }
-void parseAssign(Scanner* scanner) {}
-void parseIfStmt(Scanner* scanner) {}
-void parseWhileStmt(Scanner* scanner) {}
-void parseInput(Scanner* scanner) {}
-void parseOutput(Scanner* scanner) {}
-void parseExpr(Scanner* scanner) {}
-void parseFactor(Scanner* scanner) {}
-void parseOperand(Scanner* scanner) {}
+
+void parseAssign(Scanner* scanner) {
+    parseId(scanner);
+    if (scanner->currentToken != ASSIGN) {
+        printf("Error: Missing assignment operator\n");
+        exit(1);
+    }
+    nextToken(scanner);
+    parseExpr(scanner);
+    if (scanner->currentToken != SEMICOLON) {
+        printf("Error: Missing ';'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+}
+
+void parseIfStmt(Scanner* scanner) {
+    printf("Enter IF_STMT");
+    if (scanner->currentToken != IF) {
+        printf("Error: Expected keyword 'if'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+    parseComp(scanner);
+    if (scanner->currentToken != THEN) {
+        printf("Error: Expected keyword 'then'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+    parseStmtSec(scanner);
+    if (scanner->currentToken == ELSE) {
+        nextToken(scanner);
+        parseStmtSec(scanner);
+    }
+    if (scanner->currentToken != END) {
+        printf("Error: Expected keyword 'end'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+    if (scanner->currentToken != IF) {
+        printf("Error: Expected keyword 'if'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+    if (scanner->currentToken != SEMICOLON) {
+        printf("Error: Missing ';'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+}
+
+void parseWhileStmt(Scanner* scanner) {
+    if (scanner->currentToken != WHILE) {
+        printf("Error: Expected keyword 'while'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+    parseComp(scanner);
+    if (scanner->currentToken != LOOP) {
+        printf("Error: Expected keyword 'loop'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+    parseStmtSec(scanner);
+    if (scanner->currentToken != END) {
+        printf("Error: Expected keyword 'end'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+    if (scanner->currentToken != LOOP) {
+        printf("Error: Expected keyword 'loop'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+    if (scanner->currentToken != SEMICOLON) {
+        printf("Error: Missing ';'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+}
+
+void parseInput(Scanner* scanner) {
+    if (scanner->currentToken != INPUT) {
+        printf("Error: Expected keyword 'input'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+    parseIdList(scanner);
+    if (scanner->currentToken != SEMICOLON) {
+        printf("Error: Missing ';'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+}
+
+void parseOutput(Scanner* scanner) {
+    if (scanner->currentToken != OUTPUT) {
+        printf("Error: Expected keyword 'output'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+    if (scanner->currentToken == NUM) {
+        nextToken(scanner);
+    } else {
+        parseIdList(scanner);
+    }
+    if (scanner->currentToken != SEMICOLON) {
+        printf("Error: Missing ';'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+}
+
+void parseExpr(Scanner* scanner) {
+    parseFactor(scanner);
+    if (scanner->currentToken == PLUS || scanner->currentToken == MINUS) {
+        nextToken(scanner);
+        parseExpr(scanner);
+    }
+    nextToken(scanner);
+}
+
+void parseFactor(Scanner* scanner) {
+    parseOperand(scanner);
+    if (scanner->currentToken == MULTIPLY || scanner->currentToken == DIVIDE) {
+        nextToken(scanner);
+        parseFactor(scanner);
+    }
+}
+
+void parseOperand(Scanner* scanner) {
+    if (scanner->currentToken == NUM) {
+        parseNum(scanner);
+    } else if (scanner->currentToken == ID) {
+        parseId(scanner);
+    } else if (scanner->currentToken == LEFT_PAREN) {
+        nextToken(scanner);
+        parseExpr(scanner);
+        if (scanner->currentToken != RIGHT_PAREN) {
+            printf("Error: Missing ')'\n");
+            exit(1);
+        }
+    } else {
+        printf("Error: Expected operand\n");
+        exit(1);
+    }
+}
+
 void parseNum(Scanner* scanner) {}
 void parseComp(Scanner* scanner) {}
-void parseType(Scanner* scanner) {}
+
+void parseType(Scanner* scanner) {
+    printf("Enter TYPE\n");
+    if (scanner->currentToken == INT) {
+        nextToken(scanner);
+    } else if (scanner->currentToken == FLOAT) {
+        nextToken(scanner);
+    } else if (scanner->currentToken == DOUBLE) {
+        nextToken(scanner);
+    } else {
+        printf("Error: Expected type\n");
+        exit(1);
+    }
+    printf("Exit TYPE\n");
+}
+
 void parseFuncall(Scanner* scanner) {}
