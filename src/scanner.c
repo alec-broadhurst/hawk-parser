@@ -192,4 +192,5 @@ void nextToken(Scanner* scanner) {
             break;
     }
     scanner->currentToken = token;
+    printf("Token is: %d\tLexeme is: %s\n", scanner->currentToken, scanner->lexeme);
 }
