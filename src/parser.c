@@ -86,7 +86,7 @@ void parseStmtSec(Scanner* scanner) {
     printf("Enter STMT_SEC\n");
     parseStmt(scanner);
     if (scanner->currentToken != END) {
-        nextToken(scanner);
+        //nextToken(scanner);
         parseStmtSec(scanner);
     }
     printf("Exit STMT_SEC\n");
@@ -95,24 +95,31 @@ void parseStmtSec(Scanner* scanner) {
 void parseStmt(Scanner* scanner) {
     printf("Enter STMT\n");
     nextToken(scanner);
-    if (scanner->currentToken == ID) {
-        parseAssign(scanner);
-    } else if (scanner->currentToken == IF) {
-        parseIfStmt(scanner);
-    } else if (scanner->currentToken == WHILE) {
-        parseWhileStmt(scanner);
-    } else if (scanner->currentToken == INPUT) {
-        parseInput(scanner);
-    } else if (scanner->currentToken == OUTPUT) {
-        parseOutput(scanner);
-    } else {
-        printf("Error: Expected statement\n");
-        exit(1);
+    switch(scanner->currentToken) {
+        case ID:
+            parseAssign(scanner);
+            break;
+        case IF:
+            parseIfStmt(scanner);
+            break;
+        case WHILE:
+            parseWhileStmt(scanner);
+            break;
+        case INPUT:
+            parseInput(scanner);
+            break;
+        case OUTPUT:
+            parseOutput(scanner);
+            break;
+        default:
+            printf("Error: Expected statement\n");
+            exit(1);
     }
     printf("Exit STMT\n");
 }
 
 void parseAssign(Scanner* scanner) {
+    printf("Enter ASSIGN\n");
     parseId(scanner);
     if (scanner->currentToken != ASSIGN) {
         printf("Error: Missing assignment operator\n");
@@ -124,11 +131,12 @@ void parseAssign(Scanner* scanner) {
         printf("Error: Missing ';'\n");
         exit(1);
     }
-    nextToken(scanner);
+    //nextToken(scanner);
+    printf("Exit ASSIGN\n");
 }
 
 void parseIfStmt(Scanner* scanner) {
-    printf("Enter IF_STMT");
+    printf("Enter IF_STMT\n");
     if (scanner->currentToken != IF) {
         printf("Error: Expected keyword 'if'\n");
         exit(1);
@@ -260,7 +268,33 @@ void parseOperand(Scanner* scanner) {
 }
 
 void parseNum(Scanner* scanner) {}
-void parseComp(Scanner* scanner) {}
+
+void parseComp(Scanner* scanner) {
+    if (scanner->currentToken != LEFT_PAREN) {
+        printf("Error: Missing '('\n");
+        exit(1);
+    }
+    nextToken(scanner);
+    parseOperand(scanner);
+    switch(scanner->currentToken) {
+        case EQUALS:
+            nextToken(scanner);
+            break;
+        case LESS_THAN:
+            nextToken(scanner);
+            break;
+        case GREATER_THAN:
+            nextToken(scanner);
+            break;
+        case NOT_EQUALS:
+            nextToken(scanner);
+            break;
+        default:
+            printf("Error: Expected comparison operator\n");
+            exit(1);
+    }
+    parseOperand(scanner);
+}
 
 void parseType(Scanner* scanner) {
     printf("Enter TYPE\n");
