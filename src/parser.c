@@ -55,7 +55,6 @@ void parseDecl(Scanner* scanner) {
     }
     nextToken(scanner);
     parseType(scanner);
-    // nextToken(scanner);
     if (scanner->currentToken != SEMICOLON) {
         printf("Error: Missing ';'\n");
         exit(1);
@@ -233,12 +232,14 @@ void parseOutput(Scanner* scanner) {
 }
 
 void parseExpr(Scanner* scanner) {
+    printf("Enter EXPR\n");
     parseFactor(scanner);
     if (scanner->currentToken == PLUS || scanner->currentToken == MINUS) {
         nextToken(scanner);
         parseExpr(scanner);
     }
     nextToken(scanner);
+    printf("Exit EXPR\n");
 }
 
 void parseFactor(Scanner* scanner) {
@@ -250,6 +251,7 @@ void parseFactor(Scanner* scanner) {
 }
 
 void parseOperand(Scanner* scanner) {
+    printf("Enter OPERAND\n");
     if (scanner->currentToken == NUM) {
         parseNum(scanner);
     } else if (scanner->currentToken == ID) {
@@ -261,15 +263,21 @@ void parseOperand(Scanner* scanner) {
             printf("Error: Missing ')'\n");
             exit(1);
         }
+        nextToken(scanner);
     } else {
         printf("Error: Expected operand\n");
         exit(1);
     }
+    printf("Exit OPERAND\n");
 }
 
-void parseNum(Scanner* scanner) {}
+void parseNum(Scanner* scanner) {
+    printf("Enter NUM\n");
+    printf("Exit NUM\n");
+}
 
 void parseComp(Scanner* scanner) {
+    printf("Enter COMP\n");
     if (scanner->currentToken != LEFT_PAREN) {
         printf("Error: Missing '('\n");
         exit(1);
@@ -294,6 +302,12 @@ void parseComp(Scanner* scanner) {
             exit(1);
     }
     parseOperand(scanner);
+    if (scanner->currentToken != RIGHT_PAREN) {
+        printf("Error: Missing ')'\n");
+        exit(1);
+    }
+    nextToken(scanner);
+    printf("Exit COMP\n");
 }
 
 void parseType(Scanner* scanner) {
