@@ -41,6 +41,11 @@ void parseProgram(Scanner* scanner) {
             printf("Error: Missing ';'\n");
             exit(1);
         }
+        nextToken(scanner);
+        if (scanner->currentToken != EOF) {
+            printf("Error: Expected EOF\n");
+            exit(1);
+        }
     }
     printf("Exit PROGRAM\n");
 }
