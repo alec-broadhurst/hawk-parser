@@ -6,10 +6,12 @@
 
 void parseProgram(Scanner* scanner);
 void parseDeclSec(Scanner* scanner);
+void parseDeclSecPrime(Scanner* scanner);
 void parseDecl(Scanner* scanner);
 void parseIdList(Scanner* scanner);
 void parseId(Scanner* scanner);
 void parseStmtSec(Scanner* scanner);
+void parseStmtSecPrime(Scanner* scanner);
 void parseStmt(Scanner* scanner);
 void parseAssign(Scanner* scanner);
 void parseIfStmt(Scanner* scanner);

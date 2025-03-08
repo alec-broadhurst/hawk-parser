@@ -50,13 +50,19 @@ void parseProgram(Scanner* scanner) {
     printf("Exit PROGRAM\n");
 }
 
+// DECL_SEC -> DECL | DECL DECL_SEC
+// DECL_SEC -> DECL DECL_SEC_PRIME
+// DECL_SEC_PRIME -> DECL DECL_SEC_PRIME | EPSILON
 void parseDeclSec(Scanner* scanner) {
-    printf("Enter DECL_SEC\n");
     parseDecl(scanner);
+    parseDeclSecPrime(scanner);
+}
+
+void parseDeclSecPrime(Scanner* scanner) {
     if (scanner->currentToken == ID) {
-        parseDeclSec(scanner);
+        parseDecl(scanner);
+        parseDeclSecPrime(scanner);
     }
-    printf("Exit DECL_SEC\n");
 }
 
 void parseDecl(Scanner* scanner) {
@@ -92,13 +98,21 @@ void parseIdList(Scanner* scanner) {
     printf("Exit ID_LIST\n");
 }
 
+// STMT_SEC -> STMT | STMT STMT_SEC
+// STMT_SEC -> STMT STMT_SEC'
+// STMT_SEC' -> STMT STMT_SEC' | EPSILON
 void parseStmtSec(Scanner* scanner) {
     printf("Enter STMT_SEC\n");
     parseStmt(scanner);
-    if (scanner->currentToken == ID || scanner->currentToken == IF || scanner->currentToken == WHILE || scanner->currentToken == INPUT || scanner->currentToken == OUTPUT) {
-        parseStmtSec(scanner);
-    }
+    parseStmtSecPrime(scanner);
     printf("Exit STMT_SEC\n");
+}
+
+void parseStmtSecPrime(Scanner* scanner) {
+    if (scanner->currentToken == ID || scanner->currentToken == IF || scanner->currentToken == WHILE || scanner->currentToken == INPUT || scanner->currentToken == OUTPUT) {
+        parseStmt(scanner);
+        parseStmtSecPrime(scanner);
+    }
 }
 
 void parseStmt(Scanner* scanner) {
