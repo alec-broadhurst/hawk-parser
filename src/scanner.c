@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "../include/scanner.h"
 
@@ -171,18 +172,36 @@ void nextToken(Scanner* scanner) {
             }
             break;
 
-        case CLASS_DIGIT:
-            while (scanner->charClass == CLASS_DIGIT) {
+        case CLASS_DIGIT: {
+            bool isFloat = false;
+            int numLength = 0;
+            while (scanner->charClass == CLASS_DIGIT && numLength < 11) {
                 addChar(scanner);
                 nextChar(scanner);
+                numLength++;
+                if (scanner->currentChar == '.' && !isFloat) {
+                    isFloat = true;
+                    addChar(scanner);
+                    nextChar(scanner);
+                    numLength++;
+                } else if (scanner->currentChar == '.' && isFloat) {
+                    printf("Unexpected character '.'\n");
+                    exit(1);
+                } else if (numLength > 10) {
+                    printf("Maximum value length exceeded\n");
+                    exit(1);
+                }
             }
             token = NUM;
             break;
+        }
+
         case CLASS_UNKNOWN:
             token = lookup(scanner);
             addChar(scanner);
             nextChar(scanner);
             break;
+
         case CLASS_EOF:
             token = EOF;
             scanner->lexeme[0] = 'E';
