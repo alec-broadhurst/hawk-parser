@@ -40,6 +40,7 @@ typedef struct {
     char lexeme[100];
     int lexemeLength;
     TokenType currentToken;
+    int lineNumber;
 } Scanner;
 
 // Function declarations
