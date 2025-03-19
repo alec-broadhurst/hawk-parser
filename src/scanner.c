@@ -16,13 +16,19 @@ Scanner createScanner(const char* filename) {
         }
     scanner.currentToken = UNKNOWN;
     nextChar(&scanner);
+    scanner.lineNumber = 1;
     return scanner;
 }
 
 // function to get the next character and determine its class
 void nextChar(Scanner* scanner) {
-    // get the next character from the file
-    scanner->currentChar = getc(scanner->fp);
+    // get the next character from the file, tracking line number
+    do {
+        scanner->currentChar = getc(scanner->fp);
+        if (scanner->currentChar == '\n') {
+            scanner->lineNumber++;
+        }
+    } while (scanner->currentChar == '\n');
 
     // determine the character class
     if (scanner->currentChar != EOF) {
