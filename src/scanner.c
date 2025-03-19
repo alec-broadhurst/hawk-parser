@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "../include/scanner.h"
+#include "scanner.h"
 
 // function to create a scanner and open the source file
 Scanner createScanner(const char* filename) {

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../include/scanner.h"
-#include "../include/parser.h"
+#include "scanner.h"
+#include "parser.h"
 
 
 void parseProgram(Scanner* scanner) {
