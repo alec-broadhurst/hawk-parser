@@ -13,11 +13,33 @@ Scanner createScanner(const char* filename) {
     if (scanner.fp == NULL) {
             fprintf(stderr, "Error opening file: %s\n", filename);
             exit(1);
-        }
+    }
+
     scanner.currentToken = UNKNOWN;
-    nextChar(&scanner);
     scanner.lineNumber = 1;
+    scanner.varTable.varCount = 0;
+
+    nextChar(&scanner);
     return scanner;
+}
+
+int variableLookUp(VarTable* table, const char name[]) {
+    for (int i = 0; i < table->varCount; i++) {
+        if (strcmp(table->variables[i].name, name) == 0) {
+            return 1; // found
+        }
+    }
+    return 0; // not found
+}
+
+void addVariable(VarTable* table, const char name[]) {
+    if (!variableLookUp(table, name)) {
+        strcpy(table->variables[table->varCount].name, name);
+        table->varCount++;
+    } else {
+        fprintf(stderr, "Variable %s already declared\n", name);
+        exit(1);
+    }
 }
 
 // function to get the next character and determine its class
@@ -175,6 +197,7 @@ void nextToken(Scanner* scanner) {
                 token = CALL;
             } else {
                 token = ID;
+                addVariable(&scanner->varTable, scanner->lexeme);
             }
             break;
 
