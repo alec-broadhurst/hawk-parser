@@ -23,21 +23,23 @@ Scanner createScanner(const char* filename) {
     return scanner;
 }
 
-int variableLookUp(VarTable* table, const char name[]) {
+int variableLookUp(Scanner* scanner) {
+    VarTable* table = &scanner->varTable;
     for (int i = 0; i < table->varCount; i++) {
-        if (strcmp(table->variables[i].name, name) == 0) {
+        if (strcmp(table->variables[i].name, scanner->lexeme) == 0) {
             return 1; // found
         }
     }
     return 0; // not found
 }
 
-void addVariable(VarTable* table, const char name[]) {
-    if (!variableLookUp(table, name)) {
-        strcpy(table->variables[table->varCount].name, name);
+void addVariable(Scanner* scanner) {
+    VarTable* table = &scanner->varTable;
+    if (!variableLookUp(scanner)) {
+        strcpy(table->variables[table->varCount].name, scanner->lexeme);
         table->varCount++;
     } else {
-        fprintf(stderr, "Variable %s already declared\n", name);
+        fprintf(stderr, "Line %d: Variable %s already declared\n", scanner->lineNumber, scanner->lexeme);
         exit(1);
     }
 }
@@ -197,7 +199,7 @@ void nextToken(Scanner* scanner) {
                 token = CALL;
             } else {
                 token = ID;
-                addVariable(&scanner->varTable, scanner->lexeme);
+                addVariable(scanner);
             }
             break;
 

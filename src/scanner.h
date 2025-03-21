@@ -60,7 +60,7 @@ void addChar(Scanner* scanner);
 void skipWhitespace(Scanner* scanner);
 TokenType lookup(Scanner* scanner);
 void nextToken(Scanner* scanner);
-void addVariable(VarTable* table, const char name[]);
-int variableLookUp(VarTable* table, const char name[]);
+void addVariable(Scanner* scanner);
+int variableLookUp(Scanner* scanner);
 
 #endif
