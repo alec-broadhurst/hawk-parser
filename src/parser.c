@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
+
 #include "scanner.h"
 #include "parser.h"
-
 
 void parseProgram(Scanner* scanner) {
     printf("Enter PROGRAM\n");
@@ -67,7 +67,7 @@ void parseDeclSecPrime(Scanner* scanner) {
 
 void parseDecl(Scanner* scanner) {
     printf("Enter DECL\n");
-    parseIdList(scanner);
+    parseIdList(scanner, 1);
     if (scanner->currentToken != COLON) {
         printf("Error: Missing ':'\n");
         exit(1);
@@ -82,17 +82,25 @@ void parseDecl(Scanner* scanner) {
     printf("Exit DECL\n");
 }
 
-void parseIdList(Scanner* scanner) {
+void parseIdList(Scanner* scanner, int isDecl) {
     printf("Enter ID_LIST\n");
     if (scanner->currentToken != ID) {
         printf("Error: Expected ID\n");
         exit(1);
     }
+    if (isDecl) {
+        addVariable(scanner);
+    } else {
+        if (!variableLookUp(scanner)) {
+            fprintf(stderr, "Line %d: Variable %s not declared\n", scanner->lineNumber, scanner->lexeme);
+            exit(1);
+        }
+    }
     nextToken(scanner);
 
     if (scanner->currentToken == COMMA) {
         nextToken(scanner);
-        parseIdList(scanner);
+        parseIdList(scanner, isDecl);
     }
 
     printf("Exit ID_LIST\n");
@@ -235,7 +243,7 @@ void parseInput(Scanner* scanner) {
         exit(1);
     }
     nextToken(scanner);
-    parseIdList(scanner);
+    parseIdList(scanner, 0);
     if (scanner->currentToken != SEMICOLON) {
         printf("Error: Missing ';'\n");
         exit(1);
@@ -255,7 +263,7 @@ void parseOutput(Scanner* scanner) {
         nextToken(scanner);
     }
     if (scanner->currentToken == ID) {
-        parseIdList(scanner);
+        parseIdList(scanner, 0);
     }
     if (scanner->currentToken != SEMICOLON) {
         printf("Error: Missing ';'\n");
@@ -374,7 +382,7 @@ void parseFuncall(Scanner* scanner) {
         exit(1);
     }
     nextToken(scanner);
-    parseIdList(scanner);
+    parseIdList(scanner, 0);
     if (scanner->currentToken != RIGHT_PAREN) {
         printf("Error: Missing ')'\n");
         exit(1);
