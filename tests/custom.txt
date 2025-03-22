@@ -1,0 +1,18 @@
+program
+  num1, num2 : int;
+  num3 : float;
+begin
+  input num1, num2;
+  num1 := 123456789;
+  num3 := 987654321.0;
+  call myFunc(num1, num2);
+  while (num1 < 10) loop
+    num1 := num1 + 1;
+    output num1;
+  end loop;
+  if (num1 > num2) then
+    output num1;
+  else
+    output num2;
+  end if;
+end;
