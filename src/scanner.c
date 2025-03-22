@@ -199,7 +199,6 @@ void nextToken(Scanner* scanner) {
                 token = CALL;
             } else {
                 token = ID;
-                addVariable(scanner);
             }
             break;
 
