@@ -213,7 +213,6 @@ void nextToken(Scanner* scanner) {
                     isFloat = true;
                     addChar(scanner);
                     nextChar(scanner);
-                    numLength++;
                 } else if (scanner->currentChar == '.' && isFloat) {
                     printf("Unexpected character '.'\n");
                     exit(1);
