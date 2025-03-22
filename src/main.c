@@ -2,7 +2,7 @@
 #include "parser.h"
 
 int main() {
-    Scanner scanner = createScanner("tests/input2.txt");
+    Scanner scanner = createScanner("tests/custom.txt");
     parseProgram(&scanner);
     return 0;
 }
