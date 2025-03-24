@@ -3,12 +3,13 @@
 
 #include "scanner.h"
 #include "parser.h"
+#include "error.h"
 
 void parseProgram(Scanner* scanner) {
     printf("Enter PROGRAM\n");
     nextToken(scanner); // get first token
     if (scanner->currentToken != PROGRAM) {
-        printf("Error: Expected keyword 'program'\n");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "program");
         exit(1);
     }
     nextToken(scanner);
@@ -16,34 +17,34 @@ void parseProgram(Scanner* scanner) {
         nextToken(scanner);
         parseStmtSec(scanner);
         if (scanner->currentToken != END) {
-            printf("Error: Expected keyword 'end'\n");
+            fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "end");
             exit(1);
         }
         nextToken(scanner);
         if (scanner->currentToken != SEMICOLON) {
-            printf("Error: Missing ';'\n");
+            fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
             exit(1);
         }
     } else {
         parseDeclSec(scanner);
         if (scanner->currentToken != BEGIN) {
-            printf("Error: Expected keyword 'begin'\n");
+            fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "begin");
             exit(1);
         }
         nextToken(scanner);
         parseStmtSec(scanner);
         if (scanner->currentToken != END) {
-            printf("Error: Expected keyword 'end'\n");
+            fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "end");
             exit(1);
         }
         nextToken(scanner);
         if (scanner->currentToken != SEMICOLON) {
-            printf("Error: Missing ';'\n");
+            fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
             exit(1);
         }
         nextToken(scanner);
         if (scanner->currentToken != EOF) {
-            printf("Error: Expected EOF\n");
+            fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, EOF);
             exit(1);
         }
     }
@@ -69,13 +70,13 @@ void parseDecl(Scanner* scanner) {
     printf("Enter DECL\n");
     parseIdList(scanner, 1);
     if (scanner->currentToken != COLON) {
-        printf("Error: Missing ':'\n");
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ':');
         exit(1);
     }
     nextToken(scanner);
     parseType(scanner);
     if (scanner->currentToken != SEMICOLON) {
-        printf("Error: Missing ';'\n");
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
         exit(1);
     }
     nextToken(scanner); // consume token
@@ -85,14 +86,14 @@ void parseDecl(Scanner* scanner) {
 void parseIdList(Scanner* scanner, int isDecl) {
     printf("Enter ID_LIST\n");
     if (scanner->currentToken != ID) {
-        printf("Error: Expected ID\n");
+        fprintf(stderr, EXPECTED_IDENTIFIER, scanner->lineNumber, scanner->lexeme);
         exit(1);
     }
     if (isDecl) {
         addVariable(scanner);
     } else {
         if (!variableLookUp(scanner)) {
-            fprintf(stderr, "Line %d: Variable %s not declared\n", scanner->lineNumber, scanner->lexeme);
+            fprintf(stderr, VARIABLE_NOT_DECLARED, scanner->lineNumber, scanner->lexeme);
             exit(1);
         }
     }
@@ -142,7 +143,7 @@ void parseStmt(Scanner* scanner) {
             parseOutput(scanner);
             break;
         default:
-            printf("Error: Expected statement\n");
+            fprintf(stderr, EXPECTED_STATEMENT, scanner->lineNumber, scanner->lexeme);
             exit(1);
     }
     printf("Exit STMT\n");
@@ -151,18 +152,18 @@ void parseStmt(Scanner* scanner) {
 void parseAssign(Scanner* scanner) {
     printf("Enter ASSIGN\n");
     if (scanner->currentToken != ID) {
-        printf("Error: Expected ID\n");
+        fprintf(stderr, EXPECTED_IDENTIFIER, scanner->lineNumber, scanner->lexeme);
         exit(1);
     }
     nextToken(scanner);
     if (scanner->currentToken != ASSIGN) {
-        printf("Error: Missing assignment operator\n");
+        fprintf(stderr, EXPECTED_ASSIGNMENT, scanner->lineNumber, scanner->lexeme);
         exit(1);
     }
     nextToken(scanner);
     parseExpr(scanner);
     if (scanner->currentToken != SEMICOLON) {
-        printf("Error: Missing ';'\n");
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
         exit(1);
     }
     nextToken(scanner);
@@ -172,13 +173,13 @@ void parseAssign(Scanner* scanner) {
 void parseIfStmt(Scanner* scanner) {
     printf("Enter IF_STMT\n");
     if (scanner->currentToken != IF) {
-        printf("Error: Expected keyword 'if'\n");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "if");
         exit(1);
     }
     nextToken(scanner);
     parseComp(scanner);
     if (scanner->currentToken != THEN) {
-        printf("Error: Expected keyword 'then'\n");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "then");
         exit(1);
     }
     nextToken(scanner);
@@ -188,17 +189,17 @@ void parseIfStmt(Scanner* scanner) {
         parseStmtSec(scanner);
     }
     if (scanner->currentToken != END) {
-        printf("Error: Expected keyword 'end'\n");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "end");
         exit(1);
     }
     nextToken(scanner);
     if (scanner->currentToken != IF) {
-        printf("Error: Expected keyword 'if'\n");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "if");
         exit(1);
     }
     nextToken(scanner);
     if (scanner->currentToken != SEMICOLON) {
-        printf("Error: Missing ';'\n");
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
         exit(1);
     }
     nextToken(scanner);
@@ -207,29 +208,29 @@ void parseIfStmt(Scanner* scanner) {
 void parseWhileStmt(Scanner* scanner) {
     printf("Enter WHILE_STMT\n");
     if (scanner->currentToken != WHILE) {
-        printf("Error: Expected keyword 'while'\n");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "while");
         exit(1);
     }
     nextToken(scanner);
     parseComp(scanner);
     if (scanner->currentToken != LOOP) {
-        printf("Error: Expected keyword 'loop'\n");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "loop");
         exit(1);
     }
     nextToken(scanner);
     parseStmtSec(scanner);
     if (scanner->currentToken != END) {
-        printf("Error: Expected keyword 'end'\n");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "end");
         exit(1);
     }
     nextToken(scanner);
     if (scanner->currentToken != LOOP) {
-        printf("Error: Expected keyword 'loop'\n");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "loop");
         exit(1);
     }
     nextToken(scanner);
     if (scanner->currentToken != SEMICOLON) {
-        printf("Error: Missing ';'\n");
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
         exit(1);
     }
     nextToken(scanner);
@@ -239,13 +240,13 @@ void parseWhileStmt(Scanner* scanner) {
 void parseInput(Scanner* scanner) {
     printf("Enter INPUT\n");
     if (scanner->currentToken != INPUT) {
-        printf("Error: Expected keyword 'input'\n");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "input");
         exit(1);
     }
     nextToken(scanner);
     parseIdList(scanner, 0);
     if (scanner->currentToken != SEMICOLON) {
-        printf("Error: Missing ';'\n");
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
         exit(1);
     }
     nextToken(scanner);
@@ -255,7 +256,7 @@ void parseInput(Scanner* scanner) {
 void parseOutput(Scanner* scanner) {
     printf("Enter OUTPUT\n");
     if (scanner->currentToken != OUTPUT) {
-        printf("Error: Expected keyword 'output'\n");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "output");
         exit(1);
     }
     nextToken(scanner);
@@ -266,7 +267,7 @@ void parseOutput(Scanner* scanner) {
         parseIdList(scanner, 0);
     }
     if (scanner->currentToken != SEMICOLON) {
-        printf("Error: Missing ';'\n");
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
         exit(1);
     }
     nextToken(scanner);
@@ -291,7 +292,6 @@ void parseFactor(Scanner* scanner) {
         nextToken(scanner);
         parseFactor(scanner);
     }
-    //nextToken(scanner);
     printf("Exit FACTOR\n");
 }
 
@@ -303,7 +303,7 @@ void parseOperand(Scanner* scanner) {
         nextToken(scanner);
         parseExpr(scanner);
         if (scanner->currentToken != RIGHT_PAREN) {
-            printf("Error: Missing ')'\n");
+            fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ')');
             exit(1);
         }
         nextToken(scanner);
@@ -311,7 +311,7 @@ void parseOperand(Scanner* scanner) {
         nextToken(scanner);
         parseFuncall(scanner);
     } else {
-        printf("Error: Expected operand\n");
+        fprintf(stderr, EXPECTED_OPERAND, scanner->lineNumber, scanner->lexeme);
         exit(1);
     }
     printf("Exit OPERAND\n");
@@ -320,7 +320,7 @@ void parseOperand(Scanner* scanner) {
 void parseComp(Scanner* scanner) {
     printf("Enter COMP\n");
     if (scanner->currentToken != LEFT_PAREN) {
-        printf("Error: Missing '('\n");
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, '(');
         exit(1);
     }
     nextToken(scanner);
@@ -339,12 +339,12 @@ void parseComp(Scanner* scanner) {
             nextToken(scanner);
             break;
         default:
-            printf("Error: Expected comparison operator\n");
+            fprintf(stderr, EXPECTED_COMPARISON, scanner->lineNumber, scanner->lexeme);
             exit(1);
     }
     parseOperand(scanner);
     if (scanner->currentToken != RIGHT_PAREN) {
-        printf("Error: Missing ')'\n");
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ')');
         exit(1);
     }
     nextToken(scanner);
@@ -364,7 +364,7 @@ void parseType(Scanner* scanner) {
             nextToken(scanner);
             break;
         default:
-            printf("Error: Expected type\n");
+            fprintf(stderr, EXPECTED_TYPE, scanner->lineNumber, scanner->lexeme);
             exit(1);
     }
     //printf("Exit TYPE\n");
@@ -373,23 +373,23 @@ void parseType(Scanner* scanner) {
 void parseFuncall(Scanner* scanner) {
     printf("Enter FUNCALL\n");
     if (scanner->currentToken != ID) {
-        printf("Error: Expected ID\n");
+        fprintf(stderr, EXPECTED_IDENTIFIER, scanner->lineNumber, scanner->lexeme);
         exit(1);
     }
     nextToken(scanner);
     if (scanner->currentToken != LEFT_PAREN) {
-        printf("Error: Missing '('\n");
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, '(');
         exit(1);
     }
     nextToken(scanner);
     parseIdList(scanner, 0);
     if (scanner->currentToken != RIGHT_PAREN) {
-        printf("Error: Missing ')'\n");
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ')');
         exit(1);
     }
     nextToken(scanner);
     if (scanner->currentToken != SEMICOLON) {
-        printf("Error: Missing ';'\n");
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
         exit(1);
     }
     nextToken(scanner);

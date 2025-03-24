@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #include "scanner.h"
+#include "error.h"
 
 // function to create a scanner and open the source file
 Scanner createScanner(const char* filename) {
@@ -214,10 +215,10 @@ void nextToken(Scanner* scanner) {
                     addChar(scanner);
                     nextChar(scanner);
                 } else if (scanner->currentChar == '.' && isFloat) {
-                    printf("Unexpected character '.'\n");
+                    fprintf(stderr, ILLEGAL_SYMBOL, scanner->lineNumber, scanner->currentChar);
                     exit(1);
                 } else if (numLength > 10) {
-                    printf("Maximum value length exceeded\n");
+                    fprintf(stderr, ILLEGAL_NUMBER, scanner->lineNumber, scanner->lexeme);
                     exit(1);
                 }
             }
