@@ -57,7 +57,7 @@ void nextChar(Scanner* scanner) {
 
     // determine the character class
     if (scanner->currentChar != EOF) {
-        if (isalpha(scanner->currentChar)) {
+        if (isalpha(scanner->currentChar) || scanner->currentChar == '_') {
             scanner->charClass = CLASS_LETTER;
         } else if (isdigit(scanner->currentChar)) {
             scanner->charClass = CLASS_DIGIT;
@@ -219,6 +219,9 @@ void nextToken(Scanner* scanner) {
                     exit(1);
                 } else if (numLength > 10) {
                     fprintf(stderr, ILLEGAL_NUMBER, scanner->lineNumber, scanner->lexeme);
+                    exit(1);
+                } else if (scanner->charClass == CLASS_LETTER) {
+                    fprintf(stderr, ILLEGAL_IDENTIFIER, scanner->lineNumber);
                     exit(1);
                 }
             }
