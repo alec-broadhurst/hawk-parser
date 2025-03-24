@@ -5,7 +5,7 @@ begin
   input num1, num2;
   num1 := 123456789;
   num3 := 987654321.0;
-  call myFunc(num1, num2);
+  result := call myFunc(num1, num2);
   while (num1 < 10) loop
     num1 := num1 + 1;
     output num1;
