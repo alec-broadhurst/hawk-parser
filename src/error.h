@@ -14,5 +14,6 @@
 #define EXPECTED_COMPARISON "Error on line %d: Expected comparison operator, got %s\n"
 #define EXPECTED_TYPE "Error on line %d: Expected type, got %s\n"
 #define EXPECTED_ASSIGNMENT "Error on line %d: Expected assignment operator, got %s\n"
+#define KEYWORD_IDENTIFIER_CONFLICT "Error on line %d: Identifier %s is a keyword\n"
 
 #endif
