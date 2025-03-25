@@ -5,6 +5,30 @@
 #include "parser.h"
 #include "error.h"
 
+int isKeyword(TokenType token) {
+    switch (token) {
+    case PROGRAM:
+    case BEGIN:
+    case END:
+    case IF:
+    case THEN:
+    case ELSE:
+    case WHILE:
+    case LOOP:
+    case INPUT:
+    case OUTPUT:
+    case INT:
+    case FLOAT:
+    case DOUBLE:
+    case CALL:
+        return 1;
+    default:
+        return 0;
+    }
+}
+
+
+
 void parseProgram(Scanner* scanner) {
     printf("Enter PROGRAM\n");
     nextToken(scanner); // get first token
@@ -86,6 +110,10 @@ void parseDecl(Scanner* scanner) {
 void parseIdList(Scanner* scanner, int isDecl) {
     printf("Enter ID_LIST\n");
     if (scanner->currentToken != ID) {
+        if (isKeyword(scanner->currentToken)) {
+            fprintf(stderr, KEYWORD_IDENTIFIER_CONFLICT, scanner->lineNumber, scanner->lexeme);
+            exit(1);
+        }
         fprintf(stderr, EXPECTED_IDENTIFIER, scanner->lineNumber, scanner->lexeme);
         exit(1);
     }
