@@ -416,9 +416,9 @@ void parseFuncall(Scanner* scanner) {
         exit(1);
     }
     nextToken(scanner);
-    if (scanner->currentToken != SEMICOLON) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
-        exit(1);
-    }
-    nextToken(scanner);
+    // if (scanner->currentToken != SEMICOLON) {
+    //     fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+    //     exit(1);
+    // }
+    // nextToken(scanner);
 }
