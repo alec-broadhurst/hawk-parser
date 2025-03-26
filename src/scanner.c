@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 #include "scanner.h"
 #include "error.h"
@@ -204,14 +203,14 @@ void nextToken(Scanner* scanner) {
             break;
 
         case CLASS_DIGIT: {
-            bool isFloat = false;
+            int isFloat = 0;
             int numLength = 0;
             while (scanner->charClass == CLASS_DIGIT && numLength < 11) {
                 addChar(scanner);
                 nextChar(scanner);
                 numLength++;
                 if (scanner->currentChar == '.' && !isFloat) {
-                    isFloat = true;
+                    isFloat = 1;
                     addChar(scanner);
                     nextChar(scanner);
                 } else if (scanner->currentChar == '.' && isFloat) {
@@ -244,5 +243,5 @@ void nextToken(Scanner* scanner) {
             break;
     }
     scanner->currentToken = token;
-    printf("Token is: %d\tLexeme is: %s\n", scanner->currentToken, scanner->lexeme);
+    // printf("Token is: %d\tLexeme is: %s\n", scanner->currentToken, scanner->lexeme);
 }
