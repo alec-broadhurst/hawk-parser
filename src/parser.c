@@ -27,10 +27,8 @@ int isKeyword(TokenType token) {
     }
 }
 
-
-
 void parseProgram(Scanner* scanner) {
-    printf("Enter PROGRAM\n");
+    printf("PROGRAM\n");
     nextToken(scanner); // get first token
     if (scanner->currentToken != PROGRAM) {
         fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "program");
@@ -72,13 +70,13 @@ void parseProgram(Scanner* scanner) {
             exit(1);
         }
     }
-    printf("Exit PROGRAM\n");
 }
 
 // DECL_SEC -> DECL | DECL DECL_SEC
 // DECL_SEC -> DECL DECL_SEC_PRIME
 // DECL_SEC_PRIME -> DECL DECL_SEC_PRIME | EPSILON
 void parseDeclSec(Scanner* scanner) {
+    printf("DECL_SEC\n");
     parseDecl(scanner);
     parseDeclSecPrime(scanner);
 }
@@ -91,7 +89,7 @@ void parseDeclSecPrime(Scanner* scanner) {
 }
 
 void parseDecl(Scanner* scanner) {
-    printf("Enter DECL\n");
+    printf("DECL\n");
     parseIdList(scanner, 1);
     if (scanner->currentToken != COLON) {
         fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ':');
@@ -103,12 +101,11 @@ void parseDecl(Scanner* scanner) {
         fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
         exit(1);
     }
-    nextToken(scanner); // consume token
-    printf("Exit DECL\n");
+    nextToken(scanner);
 }
 
 void parseIdList(Scanner* scanner, int isDecl) {
-    printf("Enter ID_LIST\n");
+    printf("ID_LIST\n");
     if (scanner->currentToken != ID) {
         if (isKeyword(scanner->currentToken)) {
             fprintf(stderr, KEYWORD_IDENTIFIER_CONFLICT, scanner->lineNumber, scanner->lexeme);
@@ -131,8 +128,6 @@ void parseIdList(Scanner* scanner, int isDecl) {
         nextToken(scanner);
         parseIdList(scanner, isDecl);
     }
-
-    printf("Exit ID_LIST\n");
 }
 
 // STMT_SEC -> STMT | STMT STMT_SEC
@@ -142,7 +137,6 @@ void parseStmtSec(Scanner* scanner) {
     printf("Enter STMT_SEC\n");
     parseStmt(scanner);
     parseStmtSecPrime(scanner);
-    printf("Exit STMT_SEC\n");
 }
 
 void parseStmtSecPrime(Scanner* scanner) {
@@ -153,7 +147,7 @@ void parseStmtSecPrime(Scanner* scanner) {
 }
 
 void parseStmt(Scanner* scanner) {
-    printf("Enter STMT\n");
+    printf("STMT\n");
     switch(scanner->currentToken) {
         case ID:
             parseAssign(scanner);
@@ -174,11 +168,10 @@ void parseStmt(Scanner* scanner) {
             fprintf(stderr, EXPECTED_STATEMENT, scanner->lineNumber, scanner->lexeme);
             exit(1);
     }
-    printf("Exit STMT\n");
 }
 
 void parseAssign(Scanner* scanner) {
-    printf("Enter ASSIGN\n");
+    printf("ASSIGN\n");
     if (scanner->currentToken != ID) {
         fprintf(stderr, EXPECTED_IDENTIFIER, scanner->lineNumber, scanner->lexeme);
         exit(1);
@@ -195,11 +188,10 @@ void parseAssign(Scanner* scanner) {
         exit(1);
     }
     nextToken(scanner);
-    printf("Exit ASSIGN\n");
 }
 
 void parseIfStmt(Scanner* scanner) {
-    printf("Enter IF_STMT\n");
+    printf("IF_STMT\n");
     if (scanner->currentToken != IF) {
         fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "if");
         exit(1);
@@ -234,7 +226,7 @@ void parseIfStmt(Scanner* scanner) {
 }
 
 void parseWhileStmt(Scanner* scanner) {
-    printf("Enter WHILE_STMT\n");
+    printf("WHILE_STMT\n");
     if (scanner->currentToken != WHILE) {
         fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "while");
         exit(1);
@@ -262,11 +254,10 @@ void parseWhileStmt(Scanner* scanner) {
         exit(1);
     }
     nextToken(scanner);
-    printf("Exit WHILE_STMT\n");
 }
 
 void parseInput(Scanner* scanner) {
-    printf("Enter INPUT\n");
+    printf("INPUT\n");
     if (scanner->currentToken != INPUT) {
         fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "input");
         exit(1);
@@ -278,11 +269,10 @@ void parseInput(Scanner* scanner) {
         exit(1);
     }
     nextToken(scanner);
-    printf("Exit INPUT\n");
 }
 
 void parseOutput(Scanner* scanner) {
-    printf("Enter OUTPUT\n");
+    printf("OUTPUT\n");
     if (scanner->currentToken != OUTPUT) {
         fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "output");
         exit(1);
@@ -299,32 +289,28 @@ void parseOutput(Scanner* scanner) {
         exit(1);
     }
     nextToken(scanner);
-    printf("Exit OUTPUT\n");
 }
 
 void parseExpr(Scanner* scanner) {
-    printf("Enter EXPR\n");
+    printf("EXPR\n");
     parseFactor(scanner);
     if (scanner->currentToken == PLUS || scanner->currentToken == MINUS) {
         nextToken(scanner);
         parseExpr(scanner);
     }
-    //nextToken(scanner);
-    printf("Exit EXPR\n");
 }
 
 void parseFactor(Scanner* scanner) {
-    printf("Enter FACTOR\n");
+    printf("FACTOR\n");
     parseOperand(scanner);
     if (scanner->currentToken == MULTIPLY || scanner->currentToken == DIVIDE) {
         nextToken(scanner);
         parseFactor(scanner);
     }
-    printf("Exit FACTOR\n");
 }
 
 void parseOperand(Scanner* scanner) {
-    printf("Enter OPERAND\n");
+    printf("OPERAND\n");
     if (scanner->currentToken == NUM || scanner->currentToken == ID) {
         nextToken(scanner);
     } else if (scanner->currentToken == LEFT_PAREN) {
@@ -342,11 +328,10 @@ void parseOperand(Scanner* scanner) {
         fprintf(stderr, EXPECTED_OPERAND, scanner->lineNumber, scanner->lexeme);
         exit(1);
     }
-    printf("Exit OPERAND\n");
 }
 
 void parseComp(Scanner* scanner) {
-    printf("Enter COMP\n");
+    printf("COMP\n");
     if (scanner->currentToken != LEFT_PAREN) {
         fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, '(');
         exit(1);
@@ -376,11 +361,9 @@ void parseComp(Scanner* scanner) {
         exit(1);
     }
     nextToken(scanner);
-    printf("Exit COMP\n");
 }
 
 void parseType(Scanner* scanner) {
-    //printf("Enter TYPE\n");
     switch (scanner->currentToken) {
         case INT:
             nextToken(scanner);
@@ -395,11 +378,10 @@ void parseType(Scanner* scanner) {
             fprintf(stderr, EXPECTED_TYPE, scanner->lineNumber, scanner->lexeme);
             exit(1);
     }
-    //printf("Exit TYPE\n");
 }
 
 void parseFuncall(Scanner* scanner) {
-    printf("Enter FUNCALL\n");
+    printf("FUNCALL\n");
     if (scanner->currentToken != ID) {
         fprintf(stderr, EXPECTED_IDENTIFIER, scanner->lineNumber, scanner->lexeme);
         exit(1);
@@ -416,9 +398,4 @@ void parseFuncall(Scanner* scanner) {
         exit(1);
     }
     nextToken(scanner);
-    // if (scanner->currentToken != SEMICOLON) {
-    //     fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
-    //     exit(1);
-    // }
-    // nextToken(scanner);
 }
