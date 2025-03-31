@@ -44,6 +44,8 @@ typedef struct {
 // Scanner struct definition
 typedef struct {
     FILE *fp;
+    char* buffer;
+    char* bufferPtr;
     char currentChar;
     CharClass charClass;
     char lexeme[100];
