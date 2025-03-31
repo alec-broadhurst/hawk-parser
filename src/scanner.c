@@ -15,6 +15,17 @@ Scanner createScanner(const char* filename) {
             exit(1);
     }
 
+    fseek(scanner.fp, 0, SEEK_END);
+    long file_size = ftell(scanner.fp);
+    rewind(scanner.fp);
+
+    scanner.buffer = (char*)malloc(file_size + 1);
+    scanner.bufferPtr = scanner.buffer;
+
+    fread(scanner.buffer, file_size, 1, scanner.fp);
+    scanner.buffer[file_size] = '\0';
+    fclose(scanner.fp);
+
     scanner.currentToken = UNKNOWN;
     scanner.lineNumber = 1;
     scanner.varTable.varCount = 0;
@@ -48,10 +59,11 @@ void addVariable(Scanner* scanner) {
 void nextChar(Scanner* scanner) {
     // get the next character from the file, tracking line number
     do {
-        scanner->currentChar = getc(scanner->fp);
+        scanner->currentChar = *scanner->bufferPtr;
         if (scanner->currentChar == '\n') {
             scanner->lineNumber++;
         }
+        scanner->bufferPtr++;
     } while (scanner->currentChar == '\n');
 
     // determine the character class
@@ -242,6 +254,7 @@ void nextToken(Scanner* scanner) {
             scanner->lexeme[1] = 'O';
             scanner->lexeme[2] = 'F';
             scanner->lexeme[3] = '\0';
+            free(scanner->buffer);
             break;
     }
     scanner->currentToken = token;
