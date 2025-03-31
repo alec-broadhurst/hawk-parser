@@ -67,7 +67,7 @@ void nextChar(Scanner* scanner) {
     } while (scanner->currentChar == '\n');
 
     // determine the character class
-    if (scanner->currentChar != EOF) {
+    if (scanner->currentChar != '\0') {
         if (isalpha(scanner->currentChar) || scanner->currentChar == '_') {
             scanner->charClass = CLASS_LETTER;
         } else if (isdigit(scanner->currentChar)) {
@@ -258,5 +258,4 @@ void nextToken(Scanner* scanner) {
             break;
     }
     scanner->currentToken = token;
-    // printf("Token is: %d\tLexeme is: %s\n", scanner->currentToken, scanner->lexeme);
 }
