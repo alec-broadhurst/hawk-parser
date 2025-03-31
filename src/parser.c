@@ -265,9 +265,11 @@ void parseOutput(Scanner* scanner) {
     nextToken(scanner);
     if (scanner->currentToken == NUM) {
         nextToken(scanner);
-    }
-    if (scanner->currentToken == ID) {
+    } else if (scanner->currentToken == ID) {
         parseIdList(scanner, 0);
+    } else {
+        fprintf(stderr, EXPECTED_ID_NUM, scanner->lineNumber, scanner->lexeme);
+        exit(1);
     }
     if (scanner->currentToken != SEMICOLON) {
         fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
