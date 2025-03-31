@@ -15,5 +15,6 @@
 #define EXPECTED_TYPE "Error on line %d: Expected type, got %s\n"
 #define EXPECTED_ASSIGNMENT "Error on line %d: Expected assignment operator, got %s\n"
 #define KEYWORD_IDENTIFIER_CONFLICT "Error on line %d: Identifier %s is a keyword\n"
+#define EXPECTED_ID_NUM "Error on line %d: Expected identifier or number, got %s\n"
 
 #endif
