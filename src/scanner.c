@@ -146,8 +146,6 @@ TokenType lookup(Scanner* scanner) {
             break;
 
         default:
-            addChar(scanner);
-            nextChar(scanner);
             token = UNKNOWN;
             break;
     }
@@ -230,6 +228,10 @@ void nextToken(Scanner* scanner) {
 
         case CLASS_UNKNOWN:
             token = lookup(scanner);
+            if (token == UNKNOWN) {
+                fprintf(stderr, ILLEGAL_SYMBOL, scanner->lineNumber, scanner->currentChar);
+                exit(1);
+            }
             addChar(scanner);
             nextChar(scanner);
             break;
