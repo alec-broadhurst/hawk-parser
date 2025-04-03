@@ -5,10 +5,11 @@
 
 #include "scanner.h"
 #include "error.h"
+#include "hashmap.h"
 
 // function to create a scanner and open the source file
 Scanner createScanner(const char* filename) {
-    Scanner scanner = {0};
+    Scanner scanner;
     scanner.fp = fopen(filename, "r");
     if (scanner.fp == NULL) {
             fprintf(stderr, "Error opening file: %s\n", filename);
@@ -28,31 +29,10 @@ Scanner createScanner(const char* filename) {
 
     scanner.currentToken = UNKNOWN;
     scanner.lineNumber = 1;
-    scanner.varTable.varCount = 0;
+    scanner.varTable = newHashMap();
 
     nextChar(&scanner);
     return scanner;
-}
-
-int variableLookUp(Scanner* scanner) {
-    VarTable* table = &scanner->varTable;
-    for (int i = 0; i < table->varCount; i++) {
-        if (strcmp(table->variables[i].name, scanner->lexeme) == 0) {
-            return 1; // found
-        }
-    }
-    return 0; // not found
-}
-
-void addVariable(Scanner* scanner) {
-    VarTable* table = &scanner->varTable;
-    if (!variableLookUp(scanner)) {
-        strcpy(table->variables[table->varCount].name, scanner->lexeme);
-        table->varCount++;
-    } else {
-        fprintf(stderr, "Line %d: Variable %s already declared\n", scanner->lineNumber, scanner->lexeme);
-        exit(1);
-    }
 }
 
 // function to get the next character and determine its class
