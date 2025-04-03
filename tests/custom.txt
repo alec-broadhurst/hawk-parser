@@ -1,18 +1,213 @@
 program
-  num1, num2 : int;
-  num3 : float;
+  var1, var2, var3, var4, var5, var6, var7, var8, var9, var10 : int;
+  var11, var12, var13, var14, var15, var16, var17, var18, var19, var20 : float;
+  var21, var22, var23, var24, var25, var26, var27, var28, var29, var30 : double;
+  var31, var32, var33, var34, var35, var36, var37, var38, var39, var40 : int;
+  var41, var42, var43, var44, var45, var46, var47, var48, var49, var50 : float;
+  var51, var52, var53, var54, var55, var56, var57, var58, var59, var60 : double;
+  var61, var62, var63, var64, var65, var66, var67, var68, var69, var70 : int;
+  var71, var72, var73, var74, var75, var76, var77, var78, var79, var80 : float;
+  var81, var82, var83, var84, var85, var86, var87, var88, var89, var90 : double;
+  var91, var92, var93, var94, var95, var96, var97, var98, var99, var100 : int;
 begin
-  input num1, num2;
-  num1 := 123456789;
-  num3 := 987654321.0;
-  result := call myFunc(num1, num2);
-  while (num1 < 10) loop
-    num1 := num1 + 1;
-    output num1;
+  input var1, var2, var3, var4, var5, var6, var7, var8, var9, var10;
+
+  var1 := 123456789;
+  var2 := 987654321;
+  var3 := var1 + var2;
+  var4 := var3 * 2;
+  var5 := var4 - var1;
+  var6 := var5 / 2;
+  var7 := (var6 + var3) * 4;
+  var8 := var7 * (var4 - var5);
+  var9 := var8 - var5;
+  var10 := var9 / var6;
+
+  var11 := 12345.6789;
+  var12 := 98765.4321;
+  var13 := var11 + var12;
+  var14 := var13 * 2.5;
+  var15 := var14 - var11;
+  var16 := var15 / 1.5;
+  var17 := var16 + var13;
+  var18 := (var17 * var14) / 2.0;
+  var19 := var18 - var15;
+  var20 := var19 / var16;
+
+  var21 := 123456789.1;
+  var22 := 987654321.9;
+  var23 := var21 + var22;
+  var24 := var23 * 3.14159;
+  var25 := var24 - var21;
+  var26 := var25 / 2.71828;
+  var27 := (var26 + var23) * 1.414;
+  var28 := var27 * var24;
+  var29 := var28 - var25;
+  var30 := var29 / var26;
+
+  var31 := call myFunc(var1, var2);
+  var41 := call myFunc(var11, var12);
+  var51 := call myFunc(var21, var22);
+
+  var32 := call complexFunc(var3, var4, var5);
+  var42 := call complexFunc(var13, var14, var15);
+  var52 := call complexFunc(var23, var24, var25);
+
+  while (var1 < 100) loop
+    var1 := var1 + 1;
+    var11 := var11 + 1.1;
+    var21 := var21 + 1.11111;
+    output var1;
+    output var11;
+    output var21;
   end loop;
-  if (num1 > num2) then
-    output num1;
+
+  while (var2 > 0) loop
+    var2 := var2 - 1;
+    var12 := var12 - 1.2;
+    var22 := var22 - 1.22222;
+    output var2;
+    output var12;
+    output var22;
+  end loop;
+
+  while (var3 = var4) loop
+    var3 := var3 + 1;
+    var13 := var13 + 1.3;
+    var23 := var23 + 1.33333;
+    output var3;
+    output var13;
+    output var23;
+    if (var3 > 10) then
+      var3 := 11;
+    end if;
+  end loop;
+
+  while (var5 <> var6) loop
+    var5 := var5 + 1;
+    var15 := var15 + 1.5;
+    var25 := var25 + 1.55555;
+    output var5;
+    output var15;
+    output var25;
+    if (var5 = 10) then
+      var5 := var6;
+    end if;
+  end loop;
+
+  if (var1 > var3) then
+    output var1;
+    var61 := var1 * 2;
   else
-    output num2;
+    output var3;
+    var61 := var3 * 2;
   end if;
+
+  if (var11 < var13) then
+    output var11;
+    var71 := var11 + 3.14;
+  else
+    output var13;
+    var71 := var13 + 3.14;
+  end if;
+
+  if (var21 = var23) then
+    output var21;
+    var81 := var21 / 2.0;
+  else
+    output var23;
+    var81 := var23 / 2.0;
+  end if;
+
+  input var31, var32;
+  var41 := var31 + var32;
+
+  input var41, var42;
+
+  if (var31 <> var32) then
+    output var31;
+    var62 := var31 - 1;
+  else
+    output var32;
+    var62 := var32 - 1;
+  end if;
+
+  var33 := var1 + var61;
+  var34 := var2 + var62;
+  var35 := var3 + var63;
+  var36 := var4 + var64;
+  var37 := var5 + var65;
+  var38 := var6 + var66;
+  var39 := var7 + var67;
+  var40 := var8 + var68;
+
+  var43 := var11 * var71;
+  var44 := var12 * var72;
+  var45 := var13 * var73;
+  var46 := var14 * var74;
+  var47 := var15 * var75;
+  var48 := var16 * var76;
+  var49 := var17 * var77;
+  var50 := var18 * var78;
+
+  var53 := var21 - var81;
+  var54 := var22 - var82;
+  var55 := var23 - var83;
+  var56 := var24 - var84;
+  var57 := var25 - var85;
+  var58 := var26 - var86;
+  var59 := var27 - var87;
+  var60 := var28 - var88;
+
+  var63 := var31 + var33;
+  var64 := var32 + var34;
+  var65 := var61 + var35;
+  var66 := var62 + var36;
+  var67 := var63 + var37;
+  var68 := var64 + var38;
+  var69 := var65 + var39;
+  var70 := var66 + var40;
+
+  var72 := var41 * var43;
+  var73 := var42 * var44;
+  var74 := var71 * var45;
+  var75 := var72 * var46;
+  var76 := var73 * var47;
+  var77 := var74 * var48;
+  var78 := var75 * var49;
+  var79 := var76 * var50;
+
+  var82 := var51 - var53;
+  var83 := var52 - var54;
+  var84 := var81 - var55;
+  var85 := var82 - var56;
+  var86 := var83 - var57;
+  var87 := var84 - var58;
+  var88 := var85 - var59;
+  var89 := var86 - var60;
+
+  var91 := (var1 + var2) * var3;
+  var92 := var91 / (var4 - var5);
+  var93 := (var11 * var12) + var13;
+  var94 := var93 - (var14 / var15);
+  var95 := (var21 + var22) * var23;
+  var96 := var95 / (var24 - var25);
+  var97 := var31 + (var61 * var62);
+  var98 := (var41 - var42) / var43;
+  var99 := var51 * (var81 + var82);
+  var100 := (var91 + var92) - var93;
+
+  output var91;
+  output var92;
+  output var93;
+  output var94;
+  output var95;
+  output var96;
+  output var97;
+  output var98;
+  output var99;
+  output var100;
+
+  output 42;
+  output 3.14159;
 end;
