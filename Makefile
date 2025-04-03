@@ -4,7 +4,7 @@ clean:
 	rm -rf bin/parser
 
 build: | bin
-	clang -Wall -Iinclude src/scanner.c src/parser.c src/main.c -o bin/parser
+	clang -Wall -Iinclude src/scanner.c src/parser.c src/main.c src/hashmap.c -o bin/parser
 
 bin:
 	mkdir -p bin
