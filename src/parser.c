@@ -3,6 +3,7 @@
 
 #include "scanner.h"
 #include "parser.h"
+#include "hashmap.h"
 #include "error.h"
 
 int isKeyword(TokenType token) {
@@ -107,9 +108,13 @@ void parseIdList(Scanner* scanner, int isDecl) {
         exit(1);
     }
     if (isDecl) {
-        addVariable(scanner);
+        if (variableLookup(&scanner->varTable, scanner->lexeme)) {
+            fprintf(stderr, VARIABLE_REDECLARATION, scanner->lineNumber, scanner->lexeme);
+            exit(1);
+        }
+        insert(&scanner->varTable, scanner->lexeme);
     } else {
-        if (!variableLookUp(scanner)) {
+        if (!variableLookup(&scanner->varTable, scanner->lexeme)) {
             fprintf(stderr, VARIABLE_NOT_DECLARED, scanner->lineNumber, scanner->lexeme);
             exit(1);
         }
@@ -159,6 +164,10 @@ void parseAssign(Scanner* scanner) {
     printf("ASSIGN\n");
     if (scanner->currentToken != ID) {
         fprintf(stderr, EXPECTED_IDENTIFIER, scanner->lineNumber, scanner->lexeme);
+        exit(1);
+    }
+    if (!variableLookup(&scanner->varTable, scanner->lexeme)) {
+        fprintf(stderr, VARIABLE_NOT_DECLARED, scanner->lineNumber, scanner->lexeme);
         exit(1);
     }
     nextToken(scanner);
