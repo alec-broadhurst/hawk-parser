@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+#include "hashmap.h"
+
 // Enum for TokenType and CharClass
 typedef enum {
     UNKNOWN,
@@ -52,7 +54,7 @@ typedef struct {
     int lexemeLength;
     TokenType currentToken;
     int lineNumber;
-    VarTable varTable;
+    HashMap varTable;
 } Scanner;
 
 // Function declarations
@@ -62,7 +64,5 @@ void addChar(Scanner* scanner);
 void skipWhitespace(Scanner* scanner);
 TokenType lookup(Scanner* scanner);
 void nextToken(Scanner* scanner);
-void addVariable(Scanner* scanner);
-int variableLookUp(Scanner* scanner);
 
 #endif
