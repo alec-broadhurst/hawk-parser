@@ -37,14 +37,12 @@ Scanner createScanner(const char* filename) {
 
 // function to get the next character and determine its class
 void nextChar(Scanner* scanner) {
-    // get the next character from the file, tracking line number
-    do {
-        scanner->currentChar = *scanner->bufferPtr;
-        if (scanner->currentChar == '\n') {
-            scanner->lineNumber++;
-        }
-        scanner->bufferPtr++;
-    } while (scanner->currentChar == '\n');
+    // load the next character from the buffer into currentChar
+    scanner->currentChar = *scanner->bufferPtr;
+    if (scanner->currentChar == '\n') {
+        scanner->lineNumber++;
+    }
+    scanner->bufferPtr++;
 
     // determine the character class
     if (scanner->currentChar != '\0') {
@@ -237,7 +235,6 @@ void nextToken(Scanner* scanner) {
             break;
     }
     scanner->currentToken = token;
-    printf("Current lexeme: %s\n", scanner->lexeme);
 }
 
 void destroyScanner(Scanner *scanner) {
