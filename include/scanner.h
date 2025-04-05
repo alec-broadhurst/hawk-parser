@@ -64,5 +64,6 @@ void addChar(Scanner* scanner);
 void skipWhitespace(Scanner* scanner);
 TokenType lookup(Scanner* scanner);
 void nextToken(Scanner* scanner);
+void destroyScanner(Scanner* scanner);
 
 #endif

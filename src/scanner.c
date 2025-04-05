@@ -234,8 +234,13 @@ void nextToken(Scanner* scanner) {
             scanner->lexeme[1] = 'O';
             scanner->lexeme[2] = 'F';
             scanner->lexeme[3] = '\0';
-            free(scanner->buffer);
             break;
     }
     scanner->currentToken = token;
+    printf("Current lexeme: %s\n", scanner->lexeme);
+}
+
+void destroyScanner(Scanner *scanner) {
+    free(scanner->buffer);
+    freeHashMap(&scanner->varTable);
 }
