@@ -45,4 +45,26 @@ The parser is designed to catch and report the following errors:
 Each error message includes the specific line number and a clear description of the issue.
 
 ## How to Run
-Run `make` to compile and run the project.
+### Compiling
+To compile the parser, you can use `make`:
+```bash
+make
+```
+Or compile manually with:
+```bash
+mkdir -p bin && clang -Wall -Iinclude src/scanner.c src/parser.c src/main.c src/hashmap.c -o bin/parser
+```
+### Running
+To run the parser with the default input file:
+```bash
+make run
+```
+Or directly:
+```bash
+./bin/parser
+```
+To run with a specific input file:
+```bash
+./bin/parser <input_file>
+```
+Where `<input_file>` is the path to the file you want to parse.
