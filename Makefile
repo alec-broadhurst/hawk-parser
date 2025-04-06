@@ -1,4 +1,4 @@
-default: clean build run
+default: clean build
 
 clean:
 	rm -rf bin/parser
