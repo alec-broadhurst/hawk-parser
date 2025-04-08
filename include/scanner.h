@@ -34,15 +34,6 @@ typedef enum {
     CLASS_EOF,
 } CharClass;
 
-typedef struct {
-    char name[100];
-} Variable;
-
-typedef struct {
-    Variable variables[100];
-    int varCount;
-} VarTable;
-
 // Scanner struct definition
 typedef struct {
     FILE *fp;
@@ -60,10 +51,6 @@ typedef struct {
 
 // Function declarations
 Scanner createScanner(const char* filename);
-void nextChar(Scanner* scanner);
-void addChar(Scanner* scanner);
-void skipWhitespace(Scanner* scanner);
-TokenType lookup(Scanner* scanner);
 void nextToken(Scanner* scanner);
 void destroyScanner(Scanner* scanner);
 
