@@ -32,7 +32,7 @@ void parseProgram(Scanner* scanner) {
     printf("PROGRAM\n");
     nextToken(scanner); // get first token
     if (scanner->currentToken != PROGRAM) {
-        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "program");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->tokenLineNumber, "program");
         exit(1);
     }
     nextToken(scanner);
@@ -40,34 +40,34 @@ void parseProgram(Scanner* scanner) {
         nextToken(scanner);
         parseStmtSec(scanner);
         if (scanner->currentToken != END) {
-            fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "end");
+            fprintf(stderr, EXPECTED_KEYWORD, scanner->tokenLineNumber, "end");
             exit(1);
         }
         nextToken(scanner);
         if (scanner->currentToken != SEMICOLON) {
-            fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+            fprintf(stderr, EXPECTED_SYMBOL, scanner->tokenLineNumber, ';');
             exit(1);
         }
     } else {
         parseDeclSec(scanner);
         if (scanner->currentToken != BEGIN) {
-            fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "begin");
+            fprintf(stderr, EXPECTED_KEYWORD, scanner->tokenLineNumber, "begin");
             exit(1);
         }
         nextToken(scanner);
         parseStmtSec(scanner);
         if (scanner->currentToken != END) {
-            fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "end");
+            fprintf(stderr, EXPECTED_KEYWORD, scanner->tokenLineNumber, "end");
             exit(1);
         }
         nextToken(scanner);
         if (scanner->currentToken != SEMICOLON) {
-            fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+            fprintf(stderr, EXPECTED_SYMBOL, scanner->tokenLineNumber, ';');
             exit(1);
         }
         nextToken(scanner);
         if (scanner->currentToken != EOF) {
-            fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, EOF);
+            fprintf(stderr, EXPECTED_SYMBOL, scanner->tokenLineNumber, EOF);
             exit(1);
         }
     }
@@ -85,13 +85,13 @@ void parseDecl(Scanner* scanner) {
     printf("DECL\n");
     parseIdList(scanner, 1);
     if (scanner->currentToken != COLON) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ':');
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->tokenLineNumber, ':');
         exit(1);
     }
     nextToken(scanner);
     parseType(scanner);
     if (scanner->currentToken != SEMICOLON) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->tokenLineNumber, ';');
         exit(1);
     }
     nextToken(scanner);
@@ -101,21 +101,21 @@ void parseIdList(Scanner* scanner, int isDecl) {
     printf("ID_LIST\n");
     if (scanner->currentToken != ID) {
         if (isKeyword(scanner->currentToken)) {
-            fprintf(stderr, KEYWORD_IDENTIFIER_CONFLICT, scanner->lineNumber, scanner->lexeme);
+            fprintf(stderr, KEYWORD_IDENTIFIER_CONFLICT, scanner->tokenLineNumber, scanner->lexeme);
             exit(1);
         }
-        fprintf(stderr, EXPECTED_IDENTIFIER, scanner->lineNumber, scanner->lexeme);
+        fprintf(stderr, EXPECTED_IDENTIFIER, scanner->tokenLineNumber, scanner->lexeme);
         exit(1);
     }
     if (isDecl) {
         if (variableLookup(&scanner->varTable, scanner->lexeme)) {
-            fprintf(stderr, VARIABLE_REDECLARATION, scanner->lineNumber, scanner->lexeme);
+            fprintf(stderr, VARIABLE_REDECLARATION, scanner->tokenLineNumber, scanner->lexeme);
             exit(1);
         }
         insert(&scanner->varTable, scanner->lexeme);
     } else {
         if (!variableLookup(&scanner->varTable, scanner->lexeme)) {
-            fprintf(stderr, VARIABLE_NOT_DECLARED, scanner->lineNumber, scanner->lexeme);
+            fprintf(stderr, VARIABLE_NOT_DECLARED, scanner->tokenLineNumber, scanner->lexeme);
             exit(1);
         }
     }
@@ -155,7 +155,7 @@ void parseStmt(Scanner* scanner) {
             parseOutput(scanner);
             break;
         default:
-            fprintf(stderr, EXPECTED_STATEMENT, scanner->lineNumber, scanner->lexeme);
+            fprintf(stderr, EXPECTED_STATEMENT, scanner->tokenLineNumber, scanner->lexeme);
             exit(1);
     }
 }
@@ -163,22 +163,22 @@ void parseStmt(Scanner* scanner) {
 void parseAssign(Scanner* scanner) {
     printf("ASSIGN\n");
     if (scanner->currentToken != ID) {
-        fprintf(stderr, EXPECTED_IDENTIFIER, scanner->lineNumber, scanner->lexeme);
+        fprintf(stderr, EXPECTED_IDENTIFIER, scanner->tokenLineNumber, scanner->lexeme);
         exit(1);
     }
     if (!variableLookup(&scanner->varTable, scanner->lexeme)) {
-        fprintf(stderr, VARIABLE_NOT_DECLARED, scanner->lineNumber, scanner->lexeme);
+        fprintf(stderr, VARIABLE_NOT_DECLARED, scanner->tokenLineNumber, scanner->lexeme);
         exit(1);
     }
     nextToken(scanner);
     if (scanner->currentToken != ASSIGN) {
-        fprintf(stderr, EXPECTED_ASSIGNMENT, scanner->lineNumber, scanner->lexeme);
+        fprintf(stderr, EXPECTED_ASSIGNMENT, scanner->tokenLineNumber, scanner->lexeme);
         exit(1);
     }
     nextToken(scanner);
     parseExpr(scanner);
     if (scanner->currentToken != SEMICOLON) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->tokenLineNumber, ';');
         exit(1);
     }
     nextToken(scanner);
@@ -187,13 +187,13 @@ void parseAssign(Scanner* scanner) {
 void parseIfStmt(Scanner* scanner) {
     printf("IF_STMT\n");
     if (scanner->currentToken != IF) {
-        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "if");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->tokenLineNumber, "if");
         exit(1);
     }
     nextToken(scanner);
     parseComp(scanner);
     if (scanner->currentToken != THEN) {
-        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "then");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->tokenLineNumber, "then");
         exit(1);
     }
     nextToken(scanner);
@@ -203,17 +203,17 @@ void parseIfStmt(Scanner* scanner) {
         parseStmtSec(scanner);
     }
     if (scanner->currentToken != END) {
-        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "end");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->tokenLineNumber, "end");
         exit(1);
     }
     nextToken(scanner);
     if (scanner->currentToken != IF) {
-        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "if");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->tokenLineNumber, "if");
         exit(1);
     }
     nextToken(scanner);
     if (scanner->currentToken != SEMICOLON) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->tokenLineNumber, ';');
         exit(1);
     }
     nextToken(scanner);
@@ -222,29 +222,29 @@ void parseIfStmt(Scanner* scanner) {
 void parseWhileStmt(Scanner* scanner) {
     printf("WHILE_STMT\n");
     if (scanner->currentToken != WHILE) {
-        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "while");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->tokenLineNumber, "while");
         exit(1);
     }
     nextToken(scanner);
     parseComp(scanner);
     if (scanner->currentToken != LOOP) {
-        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "loop");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->tokenLineNumber, "loop");
         exit(1);
     }
     nextToken(scanner);
     parseStmtSec(scanner);
     if (scanner->currentToken != END) {
-        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "end");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->tokenLineNumber, "end");
         exit(1);
     }
     nextToken(scanner);
     if (scanner->currentToken != LOOP) {
-        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "loop");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->tokenLineNumber, "loop");
         exit(1);
     }
     nextToken(scanner);
     if (scanner->currentToken != SEMICOLON) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->tokenLineNumber, ';');
         exit(1);
     }
     nextToken(scanner);
@@ -253,13 +253,13 @@ void parseWhileStmt(Scanner* scanner) {
 void parseInput(Scanner* scanner) {
     printf("INPUT\n");
     if (scanner->currentToken != INPUT) {
-        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "input");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->tokenLineNumber, "input");
         exit(1);
     }
     nextToken(scanner);
     parseIdList(scanner, 0);
     if (scanner->currentToken != SEMICOLON) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->tokenLineNumber, ';');
         exit(1);
     }
     nextToken(scanner);
@@ -268,7 +268,7 @@ void parseInput(Scanner* scanner) {
 void parseOutput(Scanner* scanner) {
     printf("OUTPUT\n");
     if (scanner->currentToken != OUTPUT) {
-        fprintf(stderr, EXPECTED_KEYWORD, scanner->lineNumber, "output");
+        fprintf(stderr, EXPECTED_KEYWORD, scanner->tokenLineNumber, "output");
         exit(1);
     }
     nextToken(scanner);
@@ -277,11 +277,11 @@ void parseOutput(Scanner* scanner) {
     } else if (scanner->currentToken == ID) {
         parseIdList(scanner, 0);
     } else {
-        fprintf(stderr, EXPECTED_ID_NUM, scanner->lineNumber, scanner->lexeme);
+        fprintf(stderr, EXPECTED_ID_NUM, scanner->tokenLineNumber, scanner->lexeme);
         exit(1);
     }
     if (scanner->currentToken != SEMICOLON) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->tokenLineNumber, ';');
         exit(1);
     }
     nextToken(scanner);
@@ -310,7 +310,7 @@ void parseOperand(Scanner* scanner) {
     if (scanner->currentToken == NUM || scanner->currentToken == ID) {
         if (scanner->currentToken == ID) {
             if (!variableLookup(&scanner->varTable, scanner->lexeme)) {
-                fprintf(stderr, VARIABLE_NOT_DECLARED, scanner->lineNumber, scanner->lexeme);
+                fprintf(stderr, VARIABLE_NOT_DECLARED, scanner->tokenLineNumber, scanner->lexeme);
                 exit(1);
             }
         }
@@ -319,7 +319,7 @@ void parseOperand(Scanner* scanner) {
         nextToken(scanner);
         parseExpr(scanner);
         if (scanner->currentToken != RIGHT_PAREN) {
-            fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ')');
+            fprintf(stderr, EXPECTED_SYMBOL, scanner->tokenLineNumber, ')');
             exit(1);
         }
         nextToken(scanner);
@@ -327,7 +327,7 @@ void parseOperand(Scanner* scanner) {
         nextToken(scanner);
         parseFuncall(scanner);
     } else {
-        fprintf(stderr, EXPECTED_OPERAND, scanner->lineNumber, scanner->lexeme);
+        fprintf(stderr, EXPECTED_OPERAND, scanner->tokenLineNumber, scanner->lexeme);
         exit(1);
     }
 }
@@ -335,7 +335,7 @@ void parseOperand(Scanner* scanner) {
 void parseComp(Scanner* scanner) {
     printf("COMP\n");
     if (scanner->currentToken != LEFT_PAREN) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, '(');
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->tokenLineNumber, '(');
         exit(1);
     }
     nextToken(scanner);
@@ -354,12 +354,12 @@ void parseComp(Scanner* scanner) {
             nextToken(scanner);
             break;
         default:
-            fprintf(stderr, EXPECTED_COMPARISON, scanner->lineNumber, scanner->lexeme);
+            fprintf(stderr, EXPECTED_COMPARISON, scanner->tokenLineNumber, scanner->lexeme);
             exit(1);
     }
     parseOperand(scanner);
     if (scanner->currentToken != RIGHT_PAREN) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ')');
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->tokenLineNumber, ')');
         exit(1);
     }
     nextToken(scanner);
@@ -377,7 +377,7 @@ void parseType(Scanner* scanner) {
             nextToken(scanner);
             break;
         default:
-            fprintf(stderr, EXPECTED_TYPE, scanner->lineNumber, scanner->lexeme);
+            fprintf(stderr, EXPECTED_TYPE, scanner->tokenLineNumber, scanner->lexeme);
             exit(1);
     }
 }
@@ -385,18 +385,18 @@ void parseType(Scanner* scanner) {
 void parseFuncall(Scanner* scanner) {
     printf("FUNCALL\n");
     if (scanner->currentToken != ID) {
-        fprintf(stderr, EXPECTED_IDENTIFIER, scanner->lineNumber, scanner->lexeme);
+        fprintf(stderr, EXPECTED_IDENTIFIER, scanner->tokenLineNumber, scanner->lexeme);
         exit(1);
     }
     nextToken(scanner);
     if (scanner->currentToken != LEFT_PAREN) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, '(');
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->tokenLineNumber, '(');
         exit(1);
     }
     nextToken(scanner);
     parseIdList(scanner, 0);
     if (scanner->currentToken != RIGHT_PAREN) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ')');
+        fprintf(stderr, EXPECTED_SYMBOL, scanner->tokenLineNumber, ')');
         exit(1);
     }
     nextToken(scanner);
