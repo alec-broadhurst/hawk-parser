@@ -308,6 +308,12 @@ void parseFactor(Scanner* scanner) {
 void parseOperand(Scanner* scanner) {
     printf("OPERAND\n");
     if (scanner->currentToken == NUM || scanner->currentToken == ID) {
+        if (scanner->currentToken == ID) {
+            if (!variableLookup(&scanner->varTable, scanner->lexeme)) {
+                fprintf(stderr, VARIABLE_NOT_DECLARED, scanner->lineNumber, scanner->lexeme);
+                exit(1);
+            }
+        }
         nextToken(scanner);
     } else if (scanner->currentToken == LEFT_PAREN) {
         nextToken(scanner);
