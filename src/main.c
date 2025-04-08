@@ -5,7 +5,7 @@ int main(int argc, char* argv[]) {
     Scanner scanner;
 
     if (argc == 1) {
-        scanner = createScanner("tests/custom.txt");
+        scanner = createScanner("tests/input1.txt");
     } else if (argc != 2) {
         fprintf(stderr, "Usage: %s <filename>\n", argv[0]);
         return 1;
