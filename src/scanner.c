@@ -7,37 +7,16 @@
 #include "error.h"
 #include "hashmap.h"
 
-// function to create a scanner and open the source file
-Scanner createScanner(const char* filename) {
-    Scanner scanner;
-    scanner.fp = fopen(filename, "r");
-    if (scanner.fp == NULL) {
-            fprintf(stderr, "Error opening file: %s\n", filename);
-            exit(1);
-    }
-
-    fseek(scanner.fp, 0, SEEK_END);
-    long file_size = ftell(scanner.fp);
-    rewind(scanner.fp);
-
-    scanner.buffer = (char*)malloc(file_size + 1);
-    scanner.bufferPtr = scanner.buffer;
-
-    fread(scanner.buffer, file_size, 1, scanner.fp);
-    scanner.buffer[file_size] = '\0';
-    fclose(scanner.fp);
-
-    scanner.currentToken = UNKNOWN;
-    scanner.lineNumber = 1;
-    scanner.tokenLineNumber = 1;
-    scanner.varTable = newHashMap();
-
-    nextChar(&scanner);
-    return scanner;
-}
+static void nextChar(Scanner* scanner);
+static void addChar(Scanner* scanner);
+static void skipWhitespace(Scanner* scanner);
+static TokenType lookup(Scanner* scanner);
+static inline int isOperator(char c);
+static inline int isLexemeBreaker(Scanner* scanner);
+static inline void consumeLexeme(Scanner* scanner);
 
 // function to get the next character and determine its class
-void nextChar(Scanner* scanner) {
+static void nextChar(Scanner* scanner) {
     // load the next character from the buffer into currentChar
     scanner->currentChar = *scanner->bufferPtr;
     if (scanner->currentChar == '\n') {
@@ -61,43 +40,20 @@ void nextChar(Scanner* scanner) {
 }
 
 // function to add the current character to the lexeme
-void addChar(Scanner* scanner) {
+static void addChar(Scanner* scanner) {
     scanner->lexeme[scanner->lexemeLength++] = scanner->currentChar;
     scanner->lexeme[scanner->lexemeLength] = '\0';
 }
 
-static inline int isOperator(char c) {
-    switch (c) {
-        case '(': case ')': case ';': case ',': case ':':
-        case '=': case '+': case '-': case '*': case '/':
-        case '<': case '>':
-            return 1;
-        default:
-            return 0;
-    }
-}
-
-static inline int isLexemeBreaker(Scanner* scanner) {
-    return isspace(scanner->currentChar) || scanner->currentChar == '\0' || isOperator(scanner->currentChar);
-}
-
-static inline void consumeLexeme(Scanner* scanner) {
-    while (!isLexemeBreaker(scanner)) {
-        addChar(scanner);
-        nextChar(scanner);
-    }
-}
-
-
 // function to skip whitespace
-void skipWhitespace(Scanner* scanner) {
+static void skipWhitespace(Scanner* scanner) {
     while (isspace(scanner->currentChar)) {
         nextChar(scanner);
     }
 }
 
 // function to lookup operators and parentheses
-TokenType lookup(Scanner* scanner) {
+static TokenType lookup(Scanner* scanner) {
     TokenType token = UNKNOWN;
     switch(scanner->currentChar) {
         case '(':
@@ -165,6 +121,57 @@ TokenType lookup(Scanner* scanner) {
             break;
     }
     return token;
+}
+
+static inline int isOperator(char c) {
+    switch (c) {
+        case '(': case ')': case ';': case ',': case ':':
+        case '=': case '+': case '-': case '*': case '/':
+        case '<': case '>':
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+static inline int isLexemeBreaker(Scanner* scanner) {
+    return isspace(scanner->currentChar) || scanner->currentChar == '\0' || isOperator(scanner->currentChar);
+}
+
+static inline void consumeLexeme(Scanner* scanner) {
+    while (!isLexemeBreaker(scanner)) {
+        addChar(scanner);
+        nextChar(scanner);
+    }
+}
+
+// function to create a scanner and open the source file
+Scanner createScanner(const char* filename) {
+    Scanner scanner;
+    scanner.fp = fopen(filename, "r");
+    if (scanner.fp == NULL) {
+            fprintf(stderr, "Error opening file: %s\n", filename);
+            exit(1);
+    }
+
+    fseek(scanner.fp, 0, SEEK_END);
+    long file_size = ftell(scanner.fp);
+    rewind(scanner.fp);
+
+    scanner.buffer = (char*)malloc(file_size + 1);
+    scanner.bufferPtr = scanner.buffer;
+
+    fread(scanner.buffer, file_size, 1, scanner.fp);
+    scanner.buffer[file_size] = '\0';
+    fclose(scanner.fp);
+
+    scanner.currentToken = UNKNOWN;
+    scanner.lineNumber = 1;
+    scanner.tokenLineNumber = 1;
+    scanner.varTable = newHashMap();
+
+    nextChar(&scanner);
+    return scanner;
 }
 
 // function to collect the next token
