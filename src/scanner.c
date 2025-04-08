@@ -29,6 +29,7 @@ Scanner createScanner(const char* filename) {
 
     scanner.currentToken = UNKNOWN;
     scanner.lineNumber = 1;
+    scanner.tokenLineNumber = 1;
     scanner.varTable = newHashMap();
 
     nextChar(&scanner);
@@ -40,6 +41,7 @@ void nextChar(Scanner* scanner) {
     // load the next character from the buffer into currentChar
     scanner->currentChar = *scanner->bufferPtr;
     if (scanner->currentChar == '\n') {
+        scanner->tokenLineNumber = scanner->lineNumber;
         scanner->lineNumber++;
     }
     scanner->bufferPtr++;
@@ -171,6 +173,7 @@ void nextToken(Scanner* scanner) {
     scanner->lexemeLength = 0;
     skipWhitespace(scanner);
     TokenType token = UNKNOWN;
+    scanner->tokenLineNumber = scanner->lineNumber;
 
     // determine the token based on the character class
     switch(scanner->charClass) {
