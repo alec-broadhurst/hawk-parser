@@ -1,10 +1,10 @@
-program 
+program
   x, p : int;
   r : int;
 begin
   input x, p;
   if (p>0) then
-   while (p >1) 
+   while (p >1)
    loop
      x := x *x;
      p := p -1;
@@ -15,4 +15,3 @@ begin
   end if;
   output r,x,p;
 end;
-

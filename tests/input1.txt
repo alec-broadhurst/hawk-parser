@@ -7,4 +7,3 @@ begin
     y:=x+y;
      output y;
 end;
-
