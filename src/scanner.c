@@ -64,12 +64,23 @@ void addChar(Scanner* scanner) {
     scanner->lexeme[scanner->lexemeLength] = '\0';
 }
 
-static inline int isLexemeBreaker(char c) {
-    return isspace(c) || c == '\0' || c == ';' || c == ',' || c == '(' || c == ')' || c == ':';
+static inline int isOperator(char c) {
+    switch (c) {
+        case '(': case ')': case ';': case ',': case ':':
+        case '=': case '+': case '-': case '*': case '/':
+        case '<': case '>':
+            return 1;
+        default:
+            return 0;
+    }
+}
+
+static inline int isLexemeBreaker(Scanner* scanner) {
+    return isspace(scanner->currentChar) || scanner->currentChar == '\0' || isOperator(scanner->currentChar);
 }
 
 static inline void consumeLexeme(Scanner* scanner) {
-    while (!isLexemeBreaker(scanner->currentChar)) {
+    while (!isLexemeBreaker(scanner)) {
         addChar(scanner);
         nextChar(scanner);
     }
@@ -169,7 +180,7 @@ void nextToken(Scanner* scanner) {
                 nextChar(scanner);
             }
 
-            if (!isLexemeBreaker(scanner->currentChar)) {
+            if (!isLexemeBreaker(scanner)) {
                 consumeLexeme(scanner);
                 fprintf(stderr, ILLEGAL_IDENTIFIER, scanner->lineNumber, scanner->lexeme);
                 exit(1);
@@ -222,7 +233,8 @@ void nextToken(Scanner* scanner) {
                     addChar(scanner);
                     nextChar(scanner);
                 } else if (scanner->currentChar == '.' && isFloat) {
-                    fprintf(stderr, ILLEGAL_SYMBOL, scanner->lineNumber, scanner->currentChar);
+                    consumeLexeme(scanner);
+                    fprintf(stderr, ILLEGAL_NUMBER, scanner->lineNumber, scanner->lexeme);
                     exit(1);
                 } else if (numLength > 10) {
                     fprintf(stderr, ILLEGAL_NUMBER, scanner->lineNumber, scanner->lexeme);
