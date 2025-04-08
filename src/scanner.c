@@ -9,8 +9,8 @@
 
 static void nextChar(Scanner* scanner);
 static void addChar(Scanner* scanner);
-static void skipWhitespace(Scanner* scanner);
 static TokenType lookup(Scanner* scanner);
+static inline void skipWhitespace(Scanner* scanner);
 static inline int isOperator(char c);
 static inline int isLexemeBreaker(Scanner* scanner);
 static inline void consumeLexeme(Scanner* scanner);
@@ -43,13 +43,6 @@ static void nextChar(Scanner* scanner) {
 static void addChar(Scanner* scanner) {
     scanner->lexeme[scanner->lexemeLength++] = scanner->currentChar;
     scanner->lexeme[scanner->lexemeLength] = '\0';
-}
-
-// function to skip whitespace
-static void skipWhitespace(Scanner* scanner) {
-    while (isspace(scanner->currentChar)) {
-        nextChar(scanner);
-    }
 }
 
 // function to lookup operators and parentheses
@@ -121,6 +114,13 @@ static TokenType lookup(Scanner* scanner) {
             break;
     }
     return token;
+}
+
+// function to skip whitespace
+static inline void skipWhitespace(Scanner* scanner) {
+    while (isspace(scanner->currentChar)) {
+        nextChar(scanner);
+    }
 }
 
 static inline int isOperator(char c) {
