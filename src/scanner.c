@@ -64,6 +64,18 @@ void addChar(Scanner* scanner) {
     scanner->lexeme[scanner->lexemeLength] = '\0';
 }
 
+static inline int isLexemeBreaker(char c) {
+    return isspace(c) || c == '\0' || c == ';' || c == ',' || c == '(' || c == ')' || c == ':';
+}
+
+static inline void consumeLexeme(Scanner* scanner) {
+    while (!isLexemeBreaker(scanner->currentChar)) {
+        addChar(scanner);
+        nextChar(scanner);
+    }
+}
+
+
 // function to skip whitespace
 void skipWhitespace(Scanner* scanner) {
     while (isspace(scanner->currentChar)) {
@@ -152,10 +164,18 @@ void nextToken(Scanner* scanner) {
     // determine the token based on the character class
     switch(scanner->charClass) {
         case CLASS_LETTER:
-            while (scanner->charClass == CLASS_LETTER || scanner->charClass == CLASS_DIGIT) {
+            while (scanner->charClass == CLASS_LETTER || scanner->charClass == CLASS_DIGIT || scanner->currentChar == '_') {
                 addChar(scanner);
                 nextChar(scanner);
             }
+
+            if (!isLexemeBreaker(scanner->currentChar)) {
+                consumeLexeme(scanner);
+                fprintf(stderr, ILLEGAL_IDENTIFIER, scanner->lineNumber, scanner->lexeme);
+                exit(1);
+            }
+
+
             // check if the lexeme is a reserved word
             if (strcmp(scanner->lexeme, "program") == 0) {
                 token = PROGRAM;
@@ -208,7 +228,8 @@ void nextToken(Scanner* scanner) {
                     fprintf(stderr, ILLEGAL_NUMBER, scanner->lineNumber, scanner->lexeme);
                     exit(1);
                 } else if (scanner->charClass == CLASS_LETTER) {
-                    fprintf(stderr, ILLEGAL_IDENTIFIER, scanner->lineNumber);
+                    consumeLexeme(scanner);
+                    fprintf(stderr, ILLEGAL_IDENTIFIER, scanner->lineNumber, scanner->lexeme);
                     exit(1);
                 }
             }
