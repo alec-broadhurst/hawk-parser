@@ -19,10 +19,6 @@ static inline void consumeLexeme(Scanner* scanner);
 static void nextChar(Scanner* scanner) {
     // load the next character from the buffer into currentChar
     scanner->currentChar = *scanner->bufferPtr;
-    if (scanner->currentChar == '\n') {
-        scanner->tokenLineNumber = scanner->lineNumber;
-        scanner->lineNumber++;
-    }
     scanner->bufferPtr++;
 
     // determine the character class
@@ -119,6 +115,9 @@ static TokenType lookup(Scanner* scanner) {
 // function to skip whitespace
 static inline void skipWhitespace(Scanner* scanner) {
     while (isspace(scanner->currentChar)) {
+        if(scanner->currentChar == '\n') {
+            scanner->lineNumber++;
+        }
         nextChar(scanner);
     }
 }
@@ -178,9 +177,9 @@ Scanner createScanner(const char* filename) {
 void nextToken(Scanner* scanner) {
     // reset lexeme length for next token
     scanner->lexemeLength = 0;
+    scanner->tokenLineNumber = scanner->lineNumber;
     skipWhitespace(scanner);
     TokenType token = UNKNOWN;
-    scanner->tokenLineNumber = scanner->lineNumber;
 
     // determine the token based on the character class
     switch(scanner->charClass) {
