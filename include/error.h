@@ -8,6 +8,7 @@
 #define ILLEGAL_NUMBER "Line %d: Illegal number %s: Numbers must be at most 10 digits and contain at most one decimal point\n"
 #define EXPECTED_KEYWORD "Line %d: Expected keyword %s\n"
 #define EXPECTED_SYMBOL "Line %d: Expected symbol %c\n"
+#define MISSING_SEMICOLON "Line %d: Expected ';' after '%s'\n"
 #define EXPECTED_IDENTIFIER "Line %d: Expected identifier, got %s\n"
 #define EXPECTED_STATEMENT "Line %d: Expected statement, got %s\n"
 #define EXPECTED_OPERAND "Line %d: Expected operand, got %s\n"
