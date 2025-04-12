@@ -42,7 +42,7 @@ static void parseDecl(Scanner* scanner) {
     nextToken(scanner);
     parseType(scanner);
     if (scanner->currentToken != SEMICOLON) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+        fprintf(stderr, MISSING_SEMICOLON, scanner->prevTokenLineNumber, "type");
         exit(1);
     }
     nextToken(scanner);
@@ -129,7 +129,7 @@ static void parseAssign(Scanner* scanner) {
     nextToken(scanner);
     parseExpr(scanner);
     if (scanner->currentToken != SEMICOLON) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+        fprintf(stderr, MISSING_SEMICOLON, scanner->lineNumber, "nun");
         exit(1);
     }
     nextToken(scanner);
@@ -164,7 +164,7 @@ static void parseIfStmt(Scanner* scanner) {
     }
     nextToken(scanner);
     if (scanner->currentToken != SEMICOLON) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+        fprintf(stderr, MISSING_SEMICOLON, scanner->prevTokenLineNumber, "end if");
         exit(1);
     }
     nextToken(scanner);
@@ -195,7 +195,7 @@ static void parseWhileStmt(Scanner* scanner) {
     }
     nextToken(scanner);
     if (scanner->currentToken != SEMICOLON) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+        fprintf(stderr, MISSING_SEMICOLON, scanner->prevTokenLineNumber, "end loop");
         exit(1);
     }
     nextToken(scanner);
@@ -210,7 +210,7 @@ static void parseInput(Scanner* scanner) {
     nextToken(scanner);
     parseIdList(scanner, 0);
     if (scanner->currentToken != SEMICOLON) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+        fprintf(stderr, MISSING_SEMICOLON, scanner->prevTokenLineNumber, "input {variable}");
         exit(1);
     }
     nextToken(scanner);
@@ -232,7 +232,7 @@ static void parseOutput(Scanner* scanner) {
         exit(1);
     }
     if (scanner->currentToken != SEMICOLON) {
-        fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+        fprintf(stderr, MISSING_SEMICOLON, scanner->prevTokenLineNumber, "output {variable}");
         exit(1);
     }
     nextToken(scanner);
@@ -392,7 +392,7 @@ void parseProgram(Scanner* scanner) {
         }
         nextToken(scanner);
         if (scanner->currentToken != SEMICOLON) {
-            fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+            fprintf(stderr, MISSING_SEMICOLON, scanner->prevTokenLineNumber, "end");
             exit(1);
         }
     } else {
