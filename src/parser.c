@@ -129,7 +129,7 @@ static void parseAssign(Scanner* scanner) {
     nextToken(scanner);
     parseExpr(scanner);
     if (scanner->currentToken != SEMICOLON) {
-        fprintf(stderr, MISSING_SEMICOLON, scanner->lineNumber, "nun");
+        fprintf(stderr, MISSING_SEMICOLON, scanner->prevTokenLineNumber, "assignment");
         exit(1);
     }
     nextToken(scanner);
