@@ -166,7 +166,6 @@ Scanner createScanner(const char* filename) {
 
     scanner.currentToken = UNKNOWN;
     scanner.lineNumber = 1;
-    scanner.tokenLineNumber = 1;
     scanner.varTable = newHashMap();
 
     nextChar(&scanner);
@@ -177,7 +176,6 @@ Scanner createScanner(const char* filename) {
 void nextToken(Scanner* scanner) {
     // reset lexeme length for next token
     scanner->lexemeLength = 0;
-    scanner->tokenLineNumber = scanner->lineNumber;
     skipWhitespace(scanner);
     TokenType token = UNKNOWN;
 

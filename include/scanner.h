@@ -45,7 +45,6 @@ typedef struct {
     int lexemeLength;
     TokenType currentToken;
     int lineNumber;
-    int tokenLineNumber;
     HashMap varTable;
 } Scanner;
 
