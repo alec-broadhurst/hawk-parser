@@ -409,7 +409,7 @@ void parseProgram(Scanner* scanner) {
         }
         nextToken(scanner);
         if (scanner->currentToken != SEMICOLON) {
-            fprintf(stderr, EXPECTED_SYMBOL, scanner->lineNumber, ';');
+            fprintf(stderr, MISSING_SEMICOLON, scanner->prevTokenLineNumber, "end");
             exit(1);
         }
         nextToken(scanner);
